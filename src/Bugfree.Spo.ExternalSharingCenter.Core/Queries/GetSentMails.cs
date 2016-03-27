@@ -37,9 +37,9 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
         public List<SentMail> Execute(List l)
         {
             Logger.Verbose($"About to execute {nameof(GetSentMails)}");
-            var sendMails = Map(Query(l, XElement.Parse(CamlQuery.CreateAllItemsQuery().ViewXml))).ToList();
-            Logger.Verbose($"{sendMails.Count()} sent mails found");
-            return sendMails;
+            var sentMails = Map(Query(l, XElement.Parse(CamlQuery.CreateAllItemsQuery().ViewXml))).ToList();
+            Logger.Verbose($"{sentMails.Count()} sent mails found");
+            return sentMails;
         }
     }
 }

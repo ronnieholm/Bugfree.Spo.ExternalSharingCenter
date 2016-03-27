@@ -531,8 +531,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Commands
 
         private void ResetQuickLaunch(ClientContext ctx)
         {
-            new[] {
-                "Home", "Notebook", "Documents", "Recent", "Site Contents" }
+            new[] { "Home", "Notebook", "Documents", "Recent", "Site Contents" }
                 .ToList()
                 .ForEach(title =>
                     new RemoveNavigationNode(Logger)
