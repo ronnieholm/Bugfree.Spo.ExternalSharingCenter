@@ -32,8 +32,8 @@ namespace Bugfree.Spo.ExternalSharingCenter.Cli
 
             // 3. These are the day to day operations. Either run through the CLI or as
             //    part of the Azure WebJob.
-            controller.ExpireUsers();
-            controller.SendExpirationWarnings();
+            //controller.ExpireUsers();
+            //controller.SendExpirationWarnings();
         }
     }
 }
