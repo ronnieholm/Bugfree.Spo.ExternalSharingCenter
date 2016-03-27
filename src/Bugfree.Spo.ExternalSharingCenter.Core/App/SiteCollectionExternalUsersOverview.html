@@ -1,0 +1,29 @@
+﻿<ng-form name="SiteCollectionExternalUsersOverviewForm" ng-controller="OverviewController as c">
+    <table border="1">
+        <thead>
+            <tr>
+                <th style="width:50px; text-align: left;">Action</th>
+                <th style="width:300px; text-align: left;">Title</th>
+                <th style="width:75px; text-align: left;">Start</th>
+                <th style="width:75px; text-align: left;">End</th>
+                <th style="width:200px; text-align: left;">Mail</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="s in overview">
+                <td>
+                    <a ng-hide="s.externalUserId !== undefined" href="Site collection external user guide.aspx#?siteCollectionUrl={{s.siteCollectionUrl}}">Add</a>
+                    <a ng-hide="s.externalUserId === undefined" href="Site collection external user guide.aspx#?siteCollectionUrl={{s.siteCollectionUrl}}&externalUserId={{s.externalUserId}}">Edit</a>
+                </td>
+                <td>
+                    <a target="_blank" href="{{s.siteCollectionUrl}}">{{s.title}}</a>
+                </td>
+                <td>{{s.start | date:'MM/dd/yyyy'}}</td>
+                <td>{{s.end | date:'MM/dd/yyyy'}}</td>
+                <td>
+                    <a href="mailto:{{s.mail}}">{{s.mail}}</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</ng-form>

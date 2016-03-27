@@ -1,0 +1,131 @@
+﻿<style type="text/css">
+    span.siteCollectionExternalUserGuideLabel {
+        display: inline-block;
+        width: 75px;
+    }
+</style>
+
+<ng-form name="guide" ng-controller="GuideController as c">
+    <div ng-style="c.stepToCssStyle(1)">
+        <p>Step 1 of 5</p>
+        <p>Please use this guide to share a site collection with an external user.</p>
+        <p>
+            This guide doesn't enable the sharing feature nor invites an external 
+            user to become a member of a site collection. Instead, the guide enables
+            the whitelisting of an external user's access to a site collection for a 
+            fixed period of time.
+        </p>
+        <p>
+            When the external user's access to the site collection is about to expire,
+            you'll receive an expiration warning by mail, allowing you to extend the 
+            access period before it expires. Upon expiration, the external user's 
+            access is revoked and you'll receive a notice of expiration by mail.
+        </p>
+        <input type="button" name="previous" ng-disabled="true" ng-click="" value="Previous" />
+        <input type="button" name="next" ng-disabled="false" ng-click="c.enterStep(2)" value="Next" />
+    </div>
+
+    <div ng-style="c.stepToCssStyle(2)">
+        <p>Step 2 of 5</p>
+        <p>Please select a site collection.</p>
+        <div class="ms-core-form-line">
+            <select id="siteCollection"
+                    name="siteCollection"
+                    class="ms-fullwidth"
+                    ng-model="siteCollectionUrl"
+                    ng-required="true"
+                    ng-trim="true"
+                    ng-disabled="false">
+                <option value=""></option>
+                <option ng-repeat="s in siteCollections | orderBy:'title'" value="{{s.url}}">{{s.title}}</option>
+            </select>
+        </div>     
+        <input type="button" name="previous" ng-disabled="false" ng-click="c.enterStep(1)" value="Previous" />
+        <input type="button" name="next" ng-disabled="!validSteps[2]" ng-click="c.enterStep(3)" value="Next" />
+    </div>
+
+    <div ng-style="c.stepToCssStyle(3)">
+        <p>Step 3 of 5</p>
+        <p>Please select an existing external user with whom to share the site collction.</p>
+        <div class="ms-core-form-line">
+            <select id="externalUsers"
+                    name="externalUsers"
+                    class="ms-fullwidth"
+                    ng-model="externalUserId"
+                    ng-required="true"
+                    ng-trim="true"
+                    ng-disabled="false">
+                <option value=""></option>
+                <option ng-repeat="s in externalUsers | orderBy:'mail'" value="{{s.externalUserId}}">{{s.mail}}</option>
+            </select>
+        </div>
+        <p>Or enter a mail address of a new external user with whom to share the site collection.</p>
+        <div class="ms-core-form-line">
+            <input type="text"
+                   id="mail"
+                   name="mail"
+                   class="ms-fullwidth"
+                   ng-model="mail"
+                   ng-required="true"
+                   ng-trim="true"
+                   ng-disabled="false" />
+        </div>
+        <input type="button" name="previous" ng-disabled="false" ng-click="c.enterStep(2)" value="Previous" />
+        <input type="button" name="next" ng-disabled="!validSteps[3]" ng-click="c.enterStep(4)" value="Next" />
+    </div>
+
+    <div ng-style="c.stepToCssStyle(4)">
+        <p>Step 4 of 5</p>
+        <p>Please enter a period for when the external user has access to the site collection.</p>
+        <div class="ms-core-form-line">
+            <span class="siteCollectionExternalUserGuideLabel">Start:</span>
+            <input ui-date  
+                   id="start"
+                   name="start"
+                   ng-model="start" 
+                   class="ms-fullwidth"
+                   ng-required="true" />
+        </div>
+        <div id="endContainer">
+            <div class="ms-core-form-line">
+                <span class="siteCollectionExternalUserGuideLabel">End:</span>
+                <input ui-date
+                       id="end"
+                       name="end"
+                       ng-model="end"
+                       class="ms-fullwidth"
+                       ng-required="true" />
+            </div>
+        </div>
+        <input type="button" name="previous" ng-disabled="false" ng-click="c.enterStep(3)" value="Previous" />
+        <input type="button" name="next" ng-disabled="!validSteps[4]" ng-click="c.enterStep(5)" value="Next" />
+    </div>
+    <div ng-style="c.stepToCssStyle(5)">
+        <p>Step 5 of 5</p>
+        <p>Please review your settings and click Save or go back and adjust settings.</p>
+
+        <div class="ms-core-form-line">
+            <span class="siteCollectionExternalUserGuideLabel">Url:</span>
+            {{c.getSiteCollection().url}}
+        </div>
+        <div class="ms-core-form-line">
+            <span class="siteCollectionExternalUserGuideLabel">Title:</span>
+            {{c.getSiteCollection().title}}
+        </div>
+        <div class="ms-core-form-line">
+            <span class="siteCollectionExternalUserGuideLabel">Mail:</span>
+            {{c.getMail()}}
+        </div>
+        <div class="ms-core-form-line">
+            <span class="siteCollectionExternalUserGuideLabel">Start:</span>
+            {{start | date:'MM/dd/yyyy'}} 
+        </div>
+        <div class="ms-core-form-line">
+            <span class="siteCollectionExternalUserGuideLabel">End:</span>
+            {{end | date:'MM/dd/yyyy'}}
+        </div>
+
+        <input type="button" name="previous" ng-disabled="false" ng-click="c.enterStep(4)" value="Previous" />
+        <input type="button" name="save" ng-disabled="false" ng-click="c.save()" value="Save" />
+    </div>
+</ng-form>
