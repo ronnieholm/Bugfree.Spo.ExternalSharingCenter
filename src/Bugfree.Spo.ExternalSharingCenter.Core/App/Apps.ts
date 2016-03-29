@@ -383,7 +383,7 @@ module Bugfree.Spo.ExternalSharingCenter.Services.GetSiteCollectionExternalUsers
                 .then(response => {
                     const data: any = response.data;
                     const results: any[] = data.d.results;
-                    const siteCollectionExternalUsers = results.map((s, _, __) => {
+                    let siteCollectionExternalUsers = results.map((s, _, __) => {
                         return {
                             etag: s.__metadata.etag,
                             uri: s.__metadata.uri,
@@ -396,6 +396,14 @@ module Bugfree.Spo.ExternalSharingCenter.Services.GetSiteCollectionExternalUsers
                             comment: s.Comment
                         };
                     });
+
+                    // for generating demo screen
+                    //siteCollectionExternalUsers = [
+                    //    { etag: 0, uri: "uri1", id: 1, siteCollectionExternalUserId: "guid10", siteCollectionUrl: "http://accounting", externalUserId: "guid1", start: new Date(2016, 3, 1), end: new Date(2016, 4, 30), comment: "" },
+                    //    { etag: 0, uri: "uri2", id: 2, siteCollectionExternalUserId: "guid11", siteCollectionUrl: "http://accounting", externalUserId: "guid2", start: new Date(2016, 3, 1), end: new Date(2016, 5, 15), comment: "" },
+                    //    { etag: 0, uri: "uri3", id: 3, siteCollectionExternalUserId: "guid12", siteCollectionUrl: "http://sales", externalUserId: "guid3", start: new Date(2016, 1, 1), end: new Date(2016, 4, 30), comment: "" }
+                    //];                
+
                     deferred.resolve({ state: GetSiteCollectionExternalUsersState.Ok, siteCollectionExternalUsers: siteCollectionExternalUsers });
                 },
                 _ => deferred.reject({ state: GetSiteCollectionExternalUsersState.Error, siteCollectionSharing: [] }));
@@ -534,7 +542,7 @@ module Bugfree.Spo.ExternalSharingCenter.Services.GetExternalUsers {
                 .then(response => {
                     const data: any = response.data;
                     const results: any[] = data.d.results;
-                    const externalUsers = results.map((s, _, __) => {
+                    let externalUsers = results.map((s, _, __) => {
                         return {
                             id: s.Id,
                             externalUserId: s.ExternalUserId,
@@ -542,6 +550,14 @@ module Bugfree.Spo.ExternalSharingCenter.Services.GetExternalUsers {
                             comment: s.Comment
                         };
                     });
+
+                    // for generating demo screen
+                    //externalUsers = [
+                    //    { id: 1, externalUserId: "guid1", mail: "john@acmecorp.com", comment: "" },
+                    //    { id: 2, externalUserId: "guid2", mail: "jane@acmecorp.com", comment: "" },
+                    //    { id: 3, externalUserId: "guid3", mail: "julian@contoso.com", comment: "" },
+                    //];
+
                     deferred.resolve({ state: GetExternalUsersState.Ok, externalUsers: externalUsers });
                 },
                 _ => deferred.reject({ state: GetExternalUsersState.Error, sharings: [] }));
@@ -631,6 +647,13 @@ module Bugfree.Spo.ExternalSharingCenter.Services.GetSiteCollections {
             const url = `${baseUrl}/_api/search/query?querytext='${queryText}'${selectPropertiesAsString}`;
             const recursiveDeferred = this.$q.defer<any[]>();
             this.getSearchEngineResultsRecursive(url, 0, [], recursiveDeferred).then(results => {
+                // for generating demo screen
+                //results = [
+                //    { title: "HR", url: "http://hr" },
+                //    { title: "Sales", url: "http://sales" },
+                //    { title: "Accounting", url: "http://accounting" }
+                //];
+
                 deferred.resolve({ state: GetSiteCollectionState.Ok, siteCollections: results });
             }, _ => {
                 deferred.reject({ state: GetSiteCollectionState.Error, results: [] });

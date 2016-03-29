@@ -507,7 +507,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Commands
             {
                 CreateContentEditorWebPart("Loader", $"{localPath}/SiteAssets/App/Loader.html"),
                 CreateContentEditorWebPart(
-                    "Site collection external users overview", 
+                    "Site collection external users overview",
                     $"{localPath}/SiteAssets/App/SiteCollectionExternalUsersOverview.html")
             }
             .ToList()
@@ -563,7 +563,6 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Commands
 
         public void ResetTopNavigationBar(ClientContext ctx)
         {
-            new RemoveNavigationNode(Logger).Execute(ctx, RemoveNavigationNode.Navigation.TopNavigationBar, "Home");
             var topNavigationBar = ctx.Web.Navigation.TopNavigationBar;
             ctx.Load(topNavigationBar);
             ctx.ExecuteQuery();

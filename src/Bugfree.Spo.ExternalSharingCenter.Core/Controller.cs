@@ -92,7 +92,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
                 var w = ctx.Web;
                 if (w.Language != 1033 || w.WebTemplate != "STS" || w.Configuration != 0) 
                 {
-                    throw new NotSupportedException($"Only team sites based on English language template are supported");
+                    throw new NotSupportedException("Only team sites based on English language template are supported");
                 }
 
                 new C(_logger).Execute(ctx);
