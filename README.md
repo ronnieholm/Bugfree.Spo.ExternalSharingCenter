@@ -45,10 +45,10 @@ restore and transpiles the TypeScript which powers the frontend.
 
 ### Backend
 
-The CLI is used for partial one-time setup of the frontend, importing
-existing sharings, expirering user access, and generating and sending
-mails. The WebJob serves a similar purpose running in Azure, but only
-generating mails and expires user access.
+The CLI is used to partially setup of the frontend, to import existing
+sharings, to expire user access, and to generate and send mails. The
+WebJob serves a similar purpose running in Azure, but only generating
+mails and expire user access.
 
 Before running the CLI (or WebJob), AppSettings inside
 Bugfree.Spo.ExternalSharingCenter.Cli/App.config must be defined as
@@ -91,11 +91,11 @@ standard WebJob settings and not related to ESC, per se:
     bugfreespoextsharingcntr would be a decent candidate (this is the
     placeholder used inside the config files).
 
-    The connection string is available under Storage Account, Keys,
-    and then Primary Connection String. As with any config file
-    connection string, Azure ignores it for security reasons and
-    requires those be setup in the Azure Portal under Application
-    Settings.
+    The connection string is available under *Storage Account*,
+    *Keys*, and then *Primary Connection String*. As with any config
+    file connection string, Azure ignores it for security reasons and
+    requires those be setup in the Azure Portal under *Application
+    Settings*.
 
 On first-time publication of Bugfree.Spo.ExternalSharingCenter.WebJob
 from inside Visual Studio, a schedule must be setup. Running the
@@ -109,8 +109,8 @@ A few manual setup steps are required to finalize ESC setup:
   1. On Start.aspx and
      Site%20collection%20external%20user%20guide.aspx within
      SitePages, put the page in edit mode and edit the properties of
-     the Loader web part. Under Appearance, change Chrome Type from
-     Default to None and exit page editing.
+     the Loader web part. Under *Appearance*, change *Chrome Type*
+     from *Default* to *None* and exit page editing.
 
   2. Within SiteAssets, delete the existing Notebook file.
   
@@ -126,16 +126,16 @@ A few manual setup steps are required to finalize ESC setup:
 
 Depending on the web's security settings, Contributor access may need
 to be granted to users creating and editing sharings (JavaScript runs
-on the user's behalf). Specifically, External users and Site
-collection external users lists must be editable.
+on the user's behalf). Specifically, *External users* and *Site
+collection external users* lists must be editable.
 
 ## Limitations
 
 Only sharing an entire site collection by authenticated users is
 supported by ESC. Sharing at a finer level of granularity, such as
-list or list item, makes gaining an overview even trickier. Instead of
-these finer-grained sharing options, consider creating a dedicated
-sharing site collection besides the regular ones.
+list or list item, makes gaining an overview even trickier and isn't
+supported. Instead of these finer-grained sharing options, consider
+creating a dedicated sharing site collection besides the regular ones.
 
 ## Design notes
 
@@ -156,8 +156,8 @@ site collection and ESC.
 
 Given the time it takes for the backend to iterate site collections
 and their sharing, the frontend can't provide up-to-date sharing
-information except for what it already stores. That's why the ESC
-frontend doesn't show display name of user, invited as, invited by,
+information except for what it already stores. The ESC frontend
+therefore doesn't show display name of user, invited as, invited by,
 and when the sharing is created. Such information would have to be
 stored inside ESC (in a list or property bag entry) and maintained by
 the backend.
