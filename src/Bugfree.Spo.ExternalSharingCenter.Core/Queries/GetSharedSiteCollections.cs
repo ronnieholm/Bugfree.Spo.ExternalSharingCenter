@@ -7,13 +7,13 @@ using Bugfree.Spo.Cqrs.Core;
 
 namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
 {
-    public class GetSiteCollections : Query
+    public class GetSharedSiteCollections : Query
     {
-        public GetSiteCollections(ILogger l) : base(l) { }
+        public GetSharedSiteCollections(ILogger l) : base(l) { }
 
-        public List<SiteCollection> Execute(ClientContext ctx)
+        public List<SharedSiteCollection> Execute(ClientContext ctx)
         {
-            Logger.Verbose($"About to execute {nameof(GetSiteCollections)}");
+            Logger.Verbose($"About to execute {nameof(GetSharedSiteCollections)}");
 
             var tenantSiteCollections = new GetTenantSiteCollections(Logger).Execute(ctx);
             Logger.Verbose($"{tenantSiteCollections.Count()} total site collections found on tenant");
@@ -47,7 +47,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
                     }
 
                     var externalUsers = new GetExternalUsersOnSiteCollection(Logger).Execute(site);
-                    return new SiteCollection 
+                    return new SharedSiteCollection 
                     {
                         Url = new Uri(sc.Url),
                         Title = sc.Title,

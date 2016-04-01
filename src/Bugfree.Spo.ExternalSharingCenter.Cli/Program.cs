@@ -34,6 +34,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Cli
             //    part of the Azure WebJob.
             //controller.ExpireUsers();
             //controller.SendExpirationWarnings();
+            //controller.UpdateSiteCollections();
         }
     }
 }

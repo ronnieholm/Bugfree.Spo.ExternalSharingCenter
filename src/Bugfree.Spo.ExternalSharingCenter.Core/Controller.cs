@@ -59,14 +59,14 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
             _db = new Database
             {
                 ExternalUsers = new GetExternalUsers(_logger).Execute(externalUserList),
-                SiteCollections = new GetSiteCollections(_logger).Execute(_context),
-                SiteCollectionExternalUsers = new GetSiteCollectionExternalUsers(_logger).Execute(siteCollectionExternalUserList)
+                SiteCollectionExternalUsers = new GetSiteCollectionExternalUsers(_logger).Execute(siteCollectionExternalUserList),
+                SharedSiteCollections = new GetSharedSiteCollections(_logger).Execute(_context)
             };
 
             // helps diagnose issues with the slightly buggy tanant API
-            var siteCollectionsCount = _db.SiteCollections.Count();
+            var siteCollectionsCount = _db.SharedSiteCollections.Count();
             var externalUsersCount = 0;
-            foreach (var sc in _db.SiteCollections) {
+            foreach (var sc in _db.SharedSiteCollections) {
                 externalUsersCount += sc.ExternalUsers.Count();
                 _logger.Verbose($"{sc.ExternalUsers.Count()} {sc.Url}");
             }
@@ -117,7 +117,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
             var warnings = new GenerateExpirationWarnings(_logger).Execute(_db, DateTime.Now);
             warnings.Where(n => n.SharePointExternalUser.InvitedBy == null).ToList().ForEach(n =>
             {
-                var sc = _db.SiteCollections.Single(sc1 => sc1.Url == n.SiteCollection.Url);
+                var sc = _db.SharedSiteCollections.Single(sc1 => sc1.Url == n.SiteCollection.Url);
                 n.SharePointExternalUser.InvitedBy = sc.FallbackOwnerMail;
             });
 
@@ -141,15 +141,15 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
                         : last.Days >= _settings.ExpirationWarningMailsMinimumDaysBetween;
                 }).ToList();
 
-            warningMailsThrottled.ForEach(e =>
-            {
-                var siteCollectionWithRecipientAsSiteUser = warnings.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
-                using (var warningCtx = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url))
-                {
-                    new SendMail(_logger).Execute(warningCtx, e);
-                    new AddSentMail(_logger).Execute(sentMails, e);
-                }
-            });
+            //warningMailsThrottled.ForEach(e =>
+            //{
+            //    var siteCollectionWithRecipientAsSiteUser = warnings.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
+            //    using (var warningCtx = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url))
+            //    {
+            //        new SendMail(_logger).Execute(warningCtx, e);
+            //        new AddSentMail(_logger).Execute(sentMails, e);
+            //    }
+            //});
         }
 
         public void ExpireUsers()
@@ -158,7 +158,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
             var expirations = new GenerateExpirations(_logger).Execute(_db, DateTime.Now);            
             expirations.Where(e => e.SharePointExternalUser.InvitedBy == null).ToList().ForEach(e =>
             {
-                var sc = _db.SiteCollections.Single(s => s.Url == e.SiteCollection.Url);
+                var sc = _db.SharedSiteCollections.Single(s => s.Url == e.SiteCollection.Url);
                 e.SharePointExternalUser.InvitedBy = sc.FallbackOwnerMail;
             });
 
@@ -167,23 +167,51 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
             _context.Load(sentMails);
             _context.ExecuteQuery();
 
-            expirationMails.ForEach(e =>
+            //expirationMails.ForEach(e =>
+            //{
+            //    var siteCollectionWithRecipientAsSiteUser = expirations.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
+            //    using (var expirationMailContext = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url))
+            //    {
+            //        new SendMail(_logger).Execute(expirationMailContext, e);
+            //        new AddSentMail(_logger).Execute(sentMails, e);
+            //    }
+            //});
+
+            //expirations.ForEach(e => 
+            //{
+            //    using (var expirationMailCtx = CreateClientContext(e.SiteCollection.Url)) 
+            //    {
+            //        new RemoveUserFromSiteCollection(_logger).Execute(expirationMailCtx, e.SharePointExternalUser.UserId);
+            //    }
+            //});
+        }
+
+        public void UpdateSiteCollections() 
+        {
+            Initialize();
+
+            var lists = _context.Web.Lists;
+            var siteCollectionsList = lists.GetByTitle(C.SiteCollectionsTitle);
+
+            var items = siteCollectionsList.GetItems(CamlQuery.CreateAllItemsQuery());
+            siteCollectionsList.Context.Load(items);
+            siteCollectionsList.Context.ExecuteQuery();
+            items.ToList().ForEach(i => 
             {
-                var siteCollectionWithRecipientAsSiteUser = expirations.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
-                using (var expirationMailContext = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url))
-                {
-                    new SendMail(_logger).Execute(expirationMailContext, e);
-                    new AddSentMail(_logger).Execute(sentMails, e);
-                }
+                i.DeleteObject();
+                siteCollectionsList.Update();
             });
 
-            expirations.ForEach(e => 
+            siteCollectionsList.Context.Load(items);
+            siteCollectionsList.Context.ExecuteQuery();
+            if (items.Count != 0) 
             {
-                using (var expirationMailCtx = CreateClientContext(e.SiteCollection.Url)) 
-                {
-                    new RemoveUserFromSiteCollection(_logger).Execute(expirationMailCtx, e.SharePointExternalUser.UserId);
-                }
-            });
+                throw new InvalidOperationException(
+                    $"{C.SiteCollectionsTitle} was expected to hold 0 records. Actual count: {items.Count}");
+            }
+
+            _db.SharedSiteCollections.ForEach(ssc => 
+                new AddSiteCollection(_logger).Execute(siteCollectionsList, ssc));
         }
 
         public void Dispose()

@@ -13,7 +13,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
         {
             Logger.Verbose($"About to execute {nameof(GenerateExpirations)}");
             var expirations = new List<Expiration>();
-            foreach (var sc in db.SiteCollections)
+            foreach (var sc in db.SharedSiteCollections)
             {
                 foreach (var eu in sc.ExternalUsers)
                 {

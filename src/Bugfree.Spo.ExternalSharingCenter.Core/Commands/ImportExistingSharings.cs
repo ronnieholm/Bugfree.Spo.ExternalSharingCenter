@@ -22,7 +22,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Commands
 
         private void ImportExternalUsers(List externalUsers, Database db)
         {
-            db.SiteCollections
+            db.SharedSiteCollections
                 .SelectMany(sc => sc.ExternalUsers)
                 .Select(eu => eu.InvitedAs)
                 .Distinct()
@@ -41,7 +41,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Commands
 
         private void ImportSiteCollectionExternalUsers(List siteCollectionExternalUsers, Database db)
         {
-            db.SiteCollections
+            db.SharedSiteCollections
                 .Select(sc =>
                     sc.ExternalUsers.Select(eu =>
                         new

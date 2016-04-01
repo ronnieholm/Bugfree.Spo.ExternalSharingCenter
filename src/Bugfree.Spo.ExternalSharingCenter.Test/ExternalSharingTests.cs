@@ -10,9 +10,9 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
     public class Revoke_access_to_external_user
     {
         private ILogger _logger = new ColoredConsoleLogger();
-        private List<SiteCollection> siteCollection = new List<SiteCollection>
+        private List<SharedSiteCollection> siteCollection = new List<SharedSiteCollection>
         {
-            new SiteCollection
+            new SharedSiteCollection
             {
                 Url = new Uri("http://test/siteCollection"),
                 ExternalUsers = new List<SharePointExternalUser>
@@ -33,7 +33,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
         {
             var db = new Database
             {
-                SiteCollections = siteCollection,
+                SharedSiteCollections = siteCollection,
                 ExternalUsers = emptyExternalUsers,
                 SiteCollectionExternalUsers = 
                     new List<SiteCollectionExternalUser>
@@ -46,8 +46,8 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
 
             var expirations = new GenerateExpirations(_logger).Execute(db, DateTime.MinValue);
             Assert.Equal(1, expirations.Count());
-            Assert.Equal(db.SiteCollections[0].Url, expirations[0].SiteCollection.Url);
-            Assert.Equal(db.SiteCollections[0].ExternalUsers[0].InvitedAs, expirations[0].SharePointExternalUser.InvitedAs);
+            Assert.Equal(db.SharedSiteCollections[0].Url, expirations[0].SiteCollection.Url);
+            Assert.Equal(db.SharedSiteCollections[0].ExternalUsers[0].InvitedAs, expirations[0].SharePointExternalUser.InvitedAs);
         }
 
         [Fact]
@@ -55,7 +55,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
         {
             var db = new Database
             {
-                SiteCollections = siteCollection,
+                SharedSiteCollections = siteCollection,
                 SiteCollectionExternalUsers = emptySiteCollectionExternalUsers,
                 ExternalUsers = new List<ExternalUser>
                 {
@@ -68,8 +68,8 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
 
             var evictions = new GenerateExpirations(_logger).Execute(db, DateTime.MinValue);
             Assert.Equal(1, evictions.Count());
-            Assert.Equal(db.SiteCollections[0].Url, evictions[0].SiteCollection.Url);
-            Assert.Equal(db.SiteCollections[0].ExternalUsers[0].InvitedAs, evictions[0].SharePointExternalUser.InvitedAs);
+            Assert.Equal(db.SharedSiteCollections[0].Url, evictions[0].SiteCollection.Url);
+            Assert.Equal(db.SharedSiteCollections[0].ExternalUsers[0].InvitedAs, evictions[0].SharePointExternalUser.InvitedAs);
         }
 
         [Fact]
@@ -89,7 +89,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
             var db = new Database
             {
                 SiteCollectionExternalUsers = siteCollectionSharings,
-                SiteCollections = siteCollection,
+                SharedSiteCollections = siteCollection,
                 ExternalUsers = new List<ExternalUser>
                 {
                     new ExternalUser
@@ -102,8 +102,8 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
 
             var evictions = new GenerateExpirations(_logger).Execute(db, new DateTime(2000, 1, 1));
             Assert.Equal(1, evictions.Count());
-            Assert.Equal(db.SiteCollections[0].Url, evictions[0].SiteCollection.Url);
-            Assert.Equal(db.SiteCollections[0].ExternalUsers[0].InvitedAs, evictions[0].SharePointExternalUser.InvitedAs);
+            Assert.Equal(db.SharedSiteCollections[0].Url, evictions[0].SiteCollection.Url);
+            Assert.Equal(db.SharedSiteCollections[0].ExternalUsers[0].InvitedAs, evictions[0].SharePointExternalUser.InvitedAs);
         }
 
         [Fact]
@@ -129,22 +129,22 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
                         Mail = "test@test.com"
                     }
                 },
-                SiteCollections = siteCollection
+                SharedSiteCollections = siteCollection
             };
 
             var expirations = new GenerateExpirations(_logger).Execute(db, new DateTime(2000, 1, 1));
             Assert.Equal(1, expirations.Count());
-            Assert.Equal(db.SiteCollections[0].Url, expirations[0].SiteCollection.Url);
-            Assert.Equal(db.SiteCollections[0].ExternalUsers[0].InvitedAs, expirations[0].SharePointExternalUser.InvitedAs);
+            Assert.Equal(db.SharedSiteCollections[0].Url, expirations[0].SiteCollection.Url);
+            Assert.Equal(db.SharedSiteCollections[0].ExternalUsers[0].InvitedAs, expirations[0].SharePointExternalUser.InvitedAs);
         }
     }
 
     public class Keep_external_user
     {
         private readonly ILogger _logger = new ColoredConsoleLogger();
-        private readonly List<SiteCollection> siteCollectionWithExternalUsers = new List<SiteCollection>
+        private readonly List<SharedSiteCollection> siteCollectionWithExternalUsers = new List<SharedSiteCollection>
         {
-            new SiteCollection
+            new SharedSiteCollection
             {
                 Url = new Uri("http://test/siteCollection"),
                 ExternalUsers = new List<SharePointExternalUser>
@@ -173,7 +173,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
 
             var db = new Database
             {
-                SiteCollections = siteCollectionWithExternalUsers,
+                SharedSiteCollections = siteCollectionWithExternalUsers,
                 SiteCollectionExternalUsers = siteCollectionSharings,
                 ExternalUsers = new List<ExternalUser>
                 {
@@ -193,9 +193,9 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
     public class Issue_expiration_warning
     {
         private readonly ILogger _logger = new ColoredConsoleLogger();
-        private readonly List<SiteCollection> siteCollections = new List<SiteCollection>
+        private readonly List<SharedSiteCollection> siteCollections = new List<SharedSiteCollection>
         {
-            new SiteCollection
+            new SharedSiteCollection
             {               
                 //Id = 44,
                 Url = new Uri("http://test/siteCollection"),
@@ -223,7 +223,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
         {
             var db = new Database
             {
-                SiteCollections = siteCollections,
+                SharedSiteCollections = siteCollections,
                 ExternalUsers = externalUser,
                 SiteCollectionExternalUsers = 
                     new List<SiteCollectionExternalUser>

@@ -13,9 +13,9 @@ namespace Bugfree.Spo.ExternalSharingCenter
         // although site collections aren't stored in a separate table. Instead
         // the site collection is a Url field inside SiteCollectionExternalUsers, 
         // leading to a bit of controlled redudancy.
-        public List<SiteCollection> SiteCollections { get; set; }
         public List<SiteCollectionExternalUser> SiteCollectionExternalUsers { get; set; }
         public List<ExternalUser> ExternalUsers { get; set; }
+        public List<SharedSiteCollection> SharedSiteCollections { get; set; }
     }
 
     public enum SentMailType
@@ -47,7 +47,7 @@ namespace Bugfree.Spo.ExternalSharingCenter
     // representation of expiration for furher processing
     public class Expiration
     {
-        public SiteCollection SiteCollection { get; set; }
+        public SharedSiteCollection SiteCollection { get; set; }
         public SharePointExternalUser SharePointExternalUser { get; set; }
         public DateTime ExpirationDate { get; set; }
     }
@@ -55,7 +55,7 @@ namespace Bugfree.Spo.ExternalSharingCenter
     // representation of expiration warning for further processing
     public class ExpirationWarning
     {
-        public SiteCollection SiteCollection { get; set; }
+        public SharedSiteCollection SiteCollection { get; set; }
         public SharePointExternalUser SharePointExternalUser { get; set; }
         public DateTime ExpirationDate { get; set; }
         public TimeSpan TimeUntilExpiration { get; set; }
@@ -82,7 +82,7 @@ namespace Bugfree.Spo.ExternalSharingCenter
     }
 
     // site collection as reported by SharePoint tenant
-    public class SiteCollection
+    public class SharedSiteCollection
     {
         public Uri Url { get; set; }
         public string Title { get; set; }

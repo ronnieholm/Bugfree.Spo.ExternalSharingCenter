@@ -15,7 +15,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
             var candidates = 
                 (from sceu in db.SiteCollectionExternalUsers
                  from s in db.ExternalUsers
-                 let sc = db.SiteCollections.Single(sc => sc.Url == sceu.SiteCollectionUrl)
+                 let sc = db.SharedSiteCollections.Single(sc => sc.Url == sceu.SiteCollectionUrl)
                  where s.ExternaluserId == sceu.ExternalUserId
                  select new ExpirationWarning
                  {

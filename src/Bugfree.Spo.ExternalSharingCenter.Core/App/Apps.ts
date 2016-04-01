@@ -633,31 +633,52 @@ module Bugfree.Spo.ExternalSharingCenter.Services.GetSiteCollections {
         }
 
         execute() {
-            const baseUrl = Helpers.getLocationOrigin();
-            const queryText = `ContentClass:STS_Site Path:${baseUrl}/sites Path:${baseUrl}/teams`;
-            const selectProperties = ["Title", "OriginalPath"];
-
             const deferred = this.$q.defer<GetSiteCollectionResponse>();
-            const selectPropertiesAsDelimitedString = ["", ...selectProperties].reduce((acc, c) => acc.length === 0 ? c : acc + "," + c);
-            const selectPropertiesAsString =
-                selectProperties.length === 0
-                    ? ""
-                    : `&selectproperties='${selectPropertiesAsDelimitedString}'`;
 
-            const url = `${baseUrl}/_api/search/query?querytext='${queryText}'${selectPropertiesAsString}`;
-            const recursiveDeferred = this.$q.defer<any[]>();
-            this.getSearchEngineResultsRecursive(url, 0, [], recursiveDeferred).then(results => {
-                // for generating demo screen
-                //results = [
-                //    { title: "HR", url: "http://hr" },
-                //    { title: "Sales", url: "http://sales" },
-                //    { title: "Accounting", url: "http://accounting" }
-                //];
+            // primitive switching between site collection retrieval strategies
+            if (true) {
+                this.$http.defaults.headers.common["Accept"] = "application/json;odata=verbose";
+                this.$http
+                    .get("../_api/web/lists/getbytitle('site collections')/items?$top=5000&$select=Id,SiteCollectionTitle,SiteCollectionUrl")
+                    .then(response => {
+                        const data: any = response.data;
+                        const results: any[] = data.d.results;
+                        let siteCollections = results.map((s, _, __) => {
+                            return {
+                                id: s.Id,
+                                title: s.SiteCollectionTitle,
+                                url: s.SiteCollectionUrl
+                            };
+                        });
+                        deferred.resolve({ state: GetSiteCollectionState.Ok, siteCollections: siteCollections });
+                    },
+                    _ => deferred.reject({ state: GetSiteCollectionState.Error, siteCollections: [] }));
+            } else {
+                const baseUrl = Helpers.getLocationOrigin();
+                const queryText = `ContentClass:STS_Site Path:${baseUrl}/sites Path:${baseUrl}/teams`;
+                const selectProperties = ["Title", "OriginalPath"];
 
-                deferred.resolve({ state: GetSiteCollectionState.Ok, siteCollections: results });
-            }, _ => {
-                deferred.reject({ state: GetSiteCollectionState.Error, results: [] });
-            });
+                //const deferred = this.$q.defer<GetSiteCollectionResponse>();
+                const selectPropertiesAsDelimitedString = ["", ...selectProperties].reduce((acc, c) => acc.length === 0 ? c : acc + "," + c);
+                const selectPropertiesAsString =
+                    selectProperties.length === 0
+                        ? ""
+                        : `&selectproperties='${selectPropertiesAsDelimitedString}'`;
+
+                const url = `${baseUrl}/_api/search/query?querytext='${queryText}'${selectPropertiesAsString}`;
+                const recursiveDeferred = this.$q.defer<any[]>();
+                this.getSearchEngineResultsRecursive(url, 0, [], recursiveDeferred).then(results => {
+                    // for generating demo screen
+                    //results = [
+                    //    { title: "HR", url: "http://hr" },
+                    //    { title: "Sales", url: "http://sales" },
+                    //    { title: "Accounting", url: "http://accounting" }
+                    //];
+                    deferred.resolve({ state: GetSiteCollectionState.Ok, siteCollections: results });
+                }, _ => {
+                    deferred.reject({ state: GetSiteCollectionState.Error, siteCollections: [] });
+                });
+            }
 
             return deferred.promise;
         }

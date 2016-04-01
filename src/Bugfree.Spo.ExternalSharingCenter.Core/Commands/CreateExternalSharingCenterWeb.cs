@@ -47,6 +47,16 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Commands
             public const string Comment = nameof(Comment);
         }
 
+        public const string SiteCollectionsTitle = "Site collections";
+        public const string SiteCollectionsUrl = "SiteCollections";
+        public class SiteCollectionColumns 
+        {
+            public const string SiteCollectionId = nameof(SiteCollectionId);
+            public const string SiteCollectionTitle = nameof(SiteCollectionTitle);
+            public const string SiteCollectionUrl = nameof(SiteCollectionUrl);
+            public const string Comment = nameof(Comment);
+        }
+
         public CreateExternalSharingCenterWeb(ILogger l) : base(l) { }
 
         private void CreateExternalUsersList(ClientContext ctx)
@@ -453,6 +463,118 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Commands
                     });
         }
 
+        private void CreateSiteCollectionsList(ClientContext ctx) 
+        {
+            var lists = ctx.Web.Lists;
+            ctx.Load(lists);
+            ctx.ExecuteQuery();
+
+            var candidate = lists.SingleOrDefault(l => l.Title == SiteCollectionsTitle);
+            if (candidate != null) {
+                Logger.Warning($"List '{SiteCollectionsTitle}' already exists");
+                return;
+            }
+
+            new CreateListFromTemplate(Logger)
+                .Execute(ctx, ListTemplateType.GenericList, SiteCollectionsUrl, l => {
+                    l.OnQuickLaunch = false;
+                    l.EnableVersioning = true;
+                    l.Title = SiteCollectionsTitle;
+
+                    var title = l.Fields.GetByTitle("Title");
+                    title.Required = false;
+                    title.Update();
+                });
+
+            new CreateColumnOnList(Logger)
+                .Execute(
+                    ctx,
+                    SiteCollectionsTitle,
+                    new E("Field",
+                        new A("ID", Guid.NewGuid()),
+                        new A("Type", "Text"),
+                        new A("DisplayName", SiteCollectionColumns.SiteCollectionId),
+                        new A("Required", "TRUE"),
+                        new A("EnforceUniqueValues", "TRUE"),
+                        new A("Indexed", "TRUE"),
+                        new A("MaxLength", "255"),
+                        new A("StaticName", SiteCollectionColumns.SiteCollectionId),
+                        new A("Name", SiteCollectionColumns.SiteCollectionId)));
+
+            new CreateColumnOnList(Logger)
+                .Execute(
+                    ctx,
+                    SiteCollectionsTitle,
+                    new E("Field",
+                        new A("ID", Guid.NewGuid()),
+                        new A("Type", "Text"),
+                        new A("DisplayName", SiteCollectionColumns.SiteCollectionTitle),
+                        new A("Required", "TRUE"),
+                        new A("EnforceUniqueValues", "FALSE"),
+                        new A("Indexed", "FALSE"),
+                        new A("MaxLength", "255"),
+                        new A("StaticName", SiteCollectionColumns.SiteCollectionTitle),
+                        new A("Name", SiteCollectionColumns.SiteCollectionTitle)));
+
+            new CreateColumnOnList(Logger)
+                .Execute(
+                    ctx,
+                    SiteCollectionsTitle,
+                    new E("Field",
+                        new A("ID", Guid.NewGuid()),
+                        new A("Type", "Text"),
+                        new A("DisplayName", SiteCollectionColumns.SiteCollectionUrl),
+                        new A("Required", "TRUE"),
+                        new A("EnforceUniqueValues", "FALSE"),
+                        new A("Indexed", "FALSE"),
+                        new A("MaxLength", "255"),
+                        new A("StaticName", SiteCollectionColumns.SiteCollectionUrl),
+                        new A("Name", SiteCollectionColumns.SiteCollectionUrl)));
+
+            new CreateColumnOnList(Logger)
+                .Execute(
+                    ctx,
+                    SiteCollectionsTitle,
+                    new E("Field",
+                        new A("ID", Guid.NewGuid()),
+                        new A("Type", "Note"),
+                        new A("DisplayName", SiteCollectionColumns.Comment),
+                        new A("Required", "FALSE"),
+                        new A("EnforceUniqueValues", "FALSE"),
+                        new A("Indexed", "FALSE"),
+                        new A("NumLines", "6"),
+                        new A("RichText", "FALSE"),
+                        new A("Sortable", "FALSE"),
+                        new A("AppendOnly", true),
+                        new A("StaticName", SiteCollectionColumns.Comment),
+                        new A("Name", SiteCollectionColumns.Comment)));
+
+            new RemoveListView(Logger).Execute(ctx, SiteCollectionsTitle, AllItems);
+            new CreateListView(Logger)
+                .Execute(
+                    ctx,
+                    SiteCollectionsTitle,
+                    AllItems,
+                    new[]
+                    {
+                        "ID",
+                        "LinkTitle",
+                        SiteCollectionColumns.SiteCollectionId,
+                        SiteCollectionColumns.SiteCollectionTitle,
+                        SiteCollectionColumns.SiteCollectionUrl,
+                        SiteCollectionColumns.Comment
+                    },
+                    v => {
+                        v.DefaultView = true;
+                        v.Paged = true;
+                        v.ViewQuery =
+                            new E("OrderBy",
+                                new E("FieldRef",
+                                    new A("Name", "ID"),
+                                    new A("Ascending", "FALSE"))).ToString();
+                    });
+        }
+
         private void DisableMinimumDownloadStrategy(ClientContext ctx)
         {
             new EnsureFeatureState(Logger).Execute(ctx, EnsureFeatureState.Feature.MinimalDownloadStrategy, FeatureDefinitionScope.Web, DesiredFeatureState.Deactivated);
@@ -592,6 +714,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Commands
             Logger.Verbose($"About to execute {nameof(CreateExternalSharingCenterWeb)} at '{ctx.Url}'");
             CreateExternalUsersList(ctx);
             CreateSiteCollectionExternalUsersList(ctx);
+            CreateSiteCollectionsList(ctx);
             CreateSentMailList(ctx);
             DisableMinimumDownloadStrategy(ctx);
             SetupPages(ctx);
