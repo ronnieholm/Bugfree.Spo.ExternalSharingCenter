@@ -162,6 +162,33 @@ and when the sharing is created. Such information would have to be
 stored inside ESC (in a list or property bag entry) and maintained by
 the backend.
 
+The frontend's overview page, listing site collections, was originally
+SharePoint search driven. In SharePoint Online, search is the only way
+for client-side code to list site collections. Unfortunately, search
+turns out to be unreliable. At times it fails to return all expected
+site collections. Running
+[SPSearchEngineLiveliness](https://github.com/ronnieholm/SPSearchIndexLiveliness)
+shows that new content is one of the missing site collections does get
+indexed but filtering on ContentClass:STS_Site leaves out the site
+collection. With [no official way to trigger a full
+crawl](http://www.techmikael.com/2014/02/how-to-trigger-full-re-index-in.html),
+instead ESC supports using either search or a backend maintained list
+of site collections with sharing enabled.
+
+An important consideration is whether to treat the InvitedAs or the
+AcceptedAs property of an external user as the truth. From a technical
+point of view both may be equally valid as long as the choice is
+consistent across frontend and backend code. Trouble arises when the
+invite goes to one address and the user accepts from another. Then if
+ESC is retroactively introduced, every mismatch sharing is considered
+unauthorized and should be revoked. The first deployment of ESC
+happened retroactively and about 150 of 370 sharings, or 40%, didn't
+match up. Forcing inviters to re-share and users to accept from the
+right address might be a lot of work. In those cases, switching from
+InvitedAs to AcceptedAs may be a better option. ESC only supports
+InvitedAs as it's considered the most correct option when tight
+control over access to data is paramount.
+
 ## Additional resources
 
 [The Definitive Guide to Office 365 External Sharing](http://en.share-gate.com/blog/ultimate-guide-deal-with-office-365-external-sharing)
