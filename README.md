@@ -2,19 +2,21 @@
 
 With SharePoint Online, getting a tenant-wide overview of which site
 collections are shared with which external users (anyone with a
-Microsoft account) is tricky. Without such overview, and governance in
+Microsoft account) is hard. Without such overview, and governance in
 place for managing external users, one risks inadvertently sharing
 information with too many for too long.
 
 The External Sharing Center (from here on ESC) adds a layer of
 management and governance on top of the out of the box features. It
-provides the overview and support for creating and maintaining
-sharings with a set start and end date. As the end date nears, ESC
-reminds the inviter that a sharing is about to expire (with the option
-to extend it). Once expired, ESC revokes user access from the site
-collection and sends an access revocation mail to the inviter.
+does so by providing the overview and support for creating and
+maintaining sharings with metadta such as start and end date. As the
+end date nears, ESC reminds the inviter that a sharing is about to
+expire and provides the option to extend it. Once expired, ESC revokes
+user access from the site collection and sends an access revocation
+mail to the inviter.
 
-ESC consists of a frontend and a backend part:
+ESC consists of a frontend and a backend part (to keep the design
+simple, the design doesn't include any custom web service):
 
   - A frontend SharePoint web to be installed into any site
     collection. The web holds pages to display an overview of sharings
@@ -22,10 +24,10 @@ ESC consists of a frontend and a backend part:
     using a guided approach (see end-user documentation).
 
   - A background job which monitors site collections and sends out
-    expiration warnings, revokes user access, and sends out access
-    revocation mails. The job can be setup to continuously import new
-    users and sharings. Otherwise, it threats sharings not already in
-    ESC as unknown and removes those. The approach to use depends on
+    expiration warnings and revocation mails and revokes user
+    access. The job can be setup to continuously import new users and
+    sharings. Otherwise, it threats sharings not already in ESC as
+    unknown and revokes those. Which approach to use depends on
     whether sharings recorded in ESC or site collections are
     considered master.
 
@@ -34,6 +36,9 @@ Other notable features of ESC include:
   - Aggregated expiration warning and access revocation mails grouped
     by inviter to minimize number of mails sent. Each mail contains a
     table of sharings and provides a link to ESC for editing.
+  
+  - Overview with security trimmed list of site collections or only
+    site collections with sharing enabled, or a combination of both.
 
 ## Compiling
 
@@ -45,10 +50,10 @@ restore and transpiles the TypeScript which powers the frontend.
 
 ### Backend
 
-The CLI is used to partially setup of the frontend, to import existing
+The CLI is used to partially setup the frontend, to import existing
 sharings, to expire user access, and to generate and send mails. The
-WebJob serves a similar purpose running in Azure, but only generating
-mails and expire user access.
+WebJob serves a similar role running in Azure, but only generates mail
+and expires user access (both share a common core).
 
 Before running the CLI (or WebJob), AppSettings inside
 Bugfree.Spo.ExternalSharingCenter.Cli/App.config must be defined as
@@ -67,8 +72,8 @@ accomplished by editing Program.cs file:
 
   - **ExpirationWarningDays**. When a sharing expires in this number
     of days, the backend sends a warning mail to the inviter or one in
-    the Owners groups of the site collection in case the inviter
-    cannot be located.
+    the Owners groups of a site collection in case the inviter cannot
+    be located.
 
   - **ExpirationWarningMailsMinimumDaysBetween**. To avoid repeatedly
     sending expiration mails whenever the backend runs, this value
@@ -81,15 +86,16 @@ accomplished by editing Program.cs file:
     users in a specific site collection. The from address must be a
     valid mail address as verified by SharePoint Online.
 
-For the WebJob, two connection strings are required. These are
-standard WebJob settings and not related to ESC, per se:
+For the WebJob, additional connection strings are required. These are
+standard WebJob settings and as such unrelated to ESC:
 
   - **AzureWebJobsDashboard**, **AzureWebJobsStorage**. The WebJob API
     stores logs and other runtime information inside an Azure Storage
     Account. Ideally, the account would be named after the WebJob, but
-    the name must be between 3 and 24 lower-case characters. Thus,
-    bugfreespoextsharingcntr would be a decent candidate (this is the
-    placeholder used inside the config files).
+    the name must be between 3 and 24 lower-case characters and Azure
+    globally unique. *bugfreespoextsharingcntr* is used inside the
+    config files, but constructing a real name including the tenant is
+    better.
 
     The connection string is available under *Storage Account*,
     *Keys*, and then *Primary Connection String*. As with any config
@@ -133,9 +139,10 @@ collection external users* lists must be editable.
 
 Only sharing an entire site collection by authenticated users is
 supported by ESC. Sharing at a finer level of granularity, such as
-list or list item, makes gaining an overview even trickier and isn't
-supported. Instead of these finer-grained sharing options, consider
-creating a dedicated sharing site collection besides the regular ones.
+list or list item, makes gaining an overview even trickier and thus
+isn't supported. If these finer-grained sharing options become
+relevant, consider creating a dedicated sharing site collection
+besides the regular ones.
 
 ## Design notes
 
@@ -163,31 +170,27 @@ stored inside ESC (in a list or property bag entry) and maintained by
 the backend.
 
 The frontend's overview page, listing site collections, was originally
-SharePoint search driven. In SharePoint Online, search is the only way
-for client-side code to list site collections. Unfortunately, search
-turns out to be unreliable. At times it fails to return all expected
-site collections. Running
-[SPSearchEngineLiveliness](https://github.com/ronnieholm/SPSearchIndexLiveliness)
-shows that new content is one of the missing site collections does get
-indexed but filtering on ContentClass:STS_Site leaves out the site
-collection. With [no official way to trigger a full
-crawl](http://www.techmikael.com/2014/02/how-to-trigger-full-re-index-in.html),
-instead ESC supports using either search or a backend maintained list
-of site collections with sharing enabled.
+solely SharePoint search driven. In SharePoint Online, search is the
+only way for client-side code to list site collections. Unfortunately,
+search cannot filter on site collections with sharing enabled, causing
+it to display any site collection which the user has access to. As an
+alternative, the backend maintains a list of site collection with
+sharing enabled which the frontend can be switched to display
+instead. By combining the two, the frontend displays only site
+collections the user has access to and which have sharing enabled.
 
 An important consideration is whether to treat the InvitedAs or the
 AcceptedAs property of an external user as the truth. From a technical
 point of view both may be equally valid as long as the choice is
-consistent across frontend and backend code. Trouble arises when the
-invite goes to one address and the user accepts from another. Then if
-ESC is retroactively introduced, every mismatch sharing is considered
-unauthorized and should be revoked. The first deployment of ESC
-happened retroactively and about 150 of 370 sharings, or 40%, didn't
-match up. Forcing inviters to re-share and users to accept from the
-right address might be a lot of work. In those cases, switching from
-InvitedAs to AcceptedAs may be a better option. ESC only supports
-InvitedAs as it's considered the most correct option when tight
-control over access to data is paramount.
+consistent across frontend and backend. Trouble arises when the invite
+goes to one address and the user accepts from another. Then if ESC is
+retroactively introduced, every mismatch sharing is considered
+unauthorized and is revoked. The first deployment of ESC happened
+retroactively and about 150 of 370 sharings, or 40%, didn't match
+up. Forcing inviters to re-share and users to accept from the right
+address might be a lot of work. Therefore, the backend may be
+configured so that sharings involving an external user added before a
+certain date are ignored.
 
 ## Additional resources
 
