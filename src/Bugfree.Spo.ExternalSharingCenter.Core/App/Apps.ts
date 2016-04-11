@@ -636,7 +636,7 @@ module Bugfree.Spo.ExternalSharingCenter.Services.GetSiteCollections {
             const deferred = this.$q.defer<GetSiteCollectionResponse>();
 
             // primitive switching between site collection retrieval strategies
-            if (true) {
+            if (false) {
                 this.$http.defaults.headers.common["Accept"] = "application/json;odata=verbose";
                 this.$http
                     .get("../_api/web/lists/getbytitle('site collections')/items?$top=5000&$select=Id,SiteCollectionTitle,SiteCollectionUrl")
@@ -665,7 +665,11 @@ module Bugfree.Spo.ExternalSharingCenter.Services.GetSiteCollections {
                         ? ""
                         : `&selectproperties='${selectPropertiesAsDelimitedString}'`;
 
-                const url = `${baseUrl}/_api/search/query?querytext='${queryText}'${selectPropertiesAsString}`;
+                // beware that the TrimDuplicates setting is true by default and that its behavior may be somewhat 
+                // counter-intuitive as it removes search results which are similar to a some degree. This implies
+                // search will treat some results as similar even though they're not, leaving out distinct results.
+                // http://sharepoint.stackexchange.com/questions/14460/sharepoint-2010-search-when-is-a-document-a-duplicate
+                const url = `${baseUrl}/_api/search/query?querytext='${queryText}'${selectPropertiesAsString}&trimduplicates=false`;
                 const recursiveDeferred = this.$q.defer<any[]>();
                 this.getSearchEngineResultsRecursive(url, 0, [], recursiveDeferred).then(results => {
                     // for generating demo screen
