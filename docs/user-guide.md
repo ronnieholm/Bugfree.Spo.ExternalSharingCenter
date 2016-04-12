@@ -1,6 +1,6 @@
-# External Sharing Center user's guide
+# External Sharing Center user guide
 
-This user's guide outlines the three stages involved in managing
+This user guide outlines the three stages involved in managing
 sharings with the External Sharing Center (ESC). First, from within
 the SharePoint admin portal, a tenant administrator must enable
 sharing of the site collection. Then, within the site collection, an
