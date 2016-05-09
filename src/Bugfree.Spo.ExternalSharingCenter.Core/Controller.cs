@@ -113,7 +113,55 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
 
         public void SendExpirationWarnings()
         {
+            // for generating demo screen
+            //var expirations = new System.Collections.Generic.List<Expiration>
+            //{
+            //    new Expiration
+            //    {
+            //        SharePointExternalUser = new SharePointExternalUser
+            //        {
+            //            UserId = 0,
+            //            DisplayName = "John Doe",
+            //            AcceptedAs = "john@acmecorp.com",
+            //            InvitedAs = "john@acmecorp.com",
+            //            InvitedBy = "rh@bugfree.dk",
+            //            WhenCreated = new DateTime(2016, 4, 1)
+            //        },
+            //        SiteCollection = new SharedSiteCollection
+            //        {
+            //            Url = new Uri("http://accounting"),
+            //            Title = "Accounting",
+            //            ExternalUsers = new System.Collections.Generic.List<SharePointExternalUser>
+            //            {
+            //                new SharePointExternalUser
+            //                {
+            //                    UserId = 0,
+            //                    DisplayName = "John Doe",
+            //                    AcceptedAs = "john@acmecorp.com",
+            //                    InvitedAs = "john@acmecorp.com",
+            //                    InvitedBy = "rh@bugfree.dk",
+            //                    WhenCreated = new DateTime(2016, 4, 1)
+            //                }
+            //            },
+            //        },
+            //        ExpirationDate = new DateTime(2016, 5, 30),
+            //    }
+            //};
+            //var demoMails = new GenerateExpirationMails(_logger).Execute(expirations, _settings.ExternalSharingCenterUrl, "sharepoint@bugfree.dk");
+
             Initialize();
+
+            foreach (var s in _db.SharedSiteCollections) 
+            {
+                foreach (var e in s.ExternalUsers) 
+                {
+                    if (e.InvitedAs != e.AcceptedAs) 
+                    {
+                        Console.WriteLine(s.Title + "|" + s.Url + "|" + e.InvitedBy + "|" + e.InvitedAs + "|" + e.AcceptedAs);
+                    }
+                }
+            }
+           
             var warnings = new GenerateExpirationWarnings(_logger).Execute(_db, DateTime.Now);
             warnings.Where(n => n.SharePointExternalUser.InvitedBy == null).ToList().ForEach(n =>
             {
@@ -141,15 +189,15 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
                         : last.Days >= _settings.ExpirationWarningMailsMinimumDaysBetween;
                 }).ToList();
 
-            //warningMailsThrottled.ForEach(e =>
-            //{
-            //    var siteCollectionWithRecipientAsSiteUser = warnings.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
-            //    using (var warningCtx = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url))
-            //    {
-            //        new SendMail(_logger).Execute(warningCtx, e);
-            //        new AddSentMail(_logger).Execute(sentMails, e);
-            //    }
-            //});
+            warningMailsThrottled.ForEach(e =>
+            {
+                var siteCollectionWithRecipientAsSiteUser = warnings.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
+                using (var warningCtx = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url))
+                {
+                    new SendMail(_logger).Execute(warningCtx, e);
+                    new AddSentMail(_logger).Execute(sentMails, e);
+                }
+            });
         }
 
         public void ExpireUsers()
@@ -167,23 +215,23 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
             _context.Load(sentMails);
             _context.ExecuteQuery();
 
-            //expirationMails.ForEach(e =>
-            //{
-            //    var siteCollectionWithRecipientAsSiteUser = expirations.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
-            //    using (var expirationMailContext = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url))
-            //    {
-            //        new SendMail(_logger).Execute(expirationMailContext, e);
-            //        new AddSentMail(_logger).Execute(sentMails, e);
-            //    }
-            //});
+            expirationMails.ForEach(e =>
+            {
+                var siteCollectionWithRecipientAsSiteUser = expirations.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
+                using (var expirationMailContext = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url))
+                {
+                    new SendMail(_logger).Execute(expirationMailContext, e);
+                    new AddSentMail(_logger).Execute(sentMails, e);
+                }
+            });
 
-            //expirations.ForEach(e => 
-            //{
-            //    using (var expirationMailCtx = CreateClientContext(e.SiteCollection.Url)) 
-            //    {
-            //        new RemoveUserFromSiteCollection(_logger).Execute(expirationMailCtx, e.SharePointExternalUser.UserId);
-            //    }
-            //});
+            expirations.ForEach(e => 
+            {
+                using (var expirationMailCtx = CreateClientContext(e.SiteCollection.Url)) 
+                {
+                    new RemoveUserFromSiteCollection(_logger).Execute(expirationMailCtx, e.SharePointExternalUser.UserId);
+                }
+            });
         }
 
         public void UpdateSiteCollections() 

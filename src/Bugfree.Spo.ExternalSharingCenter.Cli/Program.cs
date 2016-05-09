@@ -12,7 +12,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Cli
             var settings = new Settings();
             var controller = new Controller(logger, settings);
 
-            // comment in parts of the code below depending on what operation you want the
+            // comment in parts of this code depending on what operation you want the
             // CLI to carry out.
 
             // 1. Sets up the External Sharing Center web as per App.config settings
