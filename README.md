@@ -1,5 +1,7 @@
 # Bugfree.Spo.ExternalSharingCenter
 
+See also [User Guide](https://github.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/blob/master/doc/user-guide.md)
+
 With SharePoint Online, getting a tenant-wide overview of which site
 collections are shared with which external users (anyone with a
 Microsoft account) is hard. Without such overview, and governance in

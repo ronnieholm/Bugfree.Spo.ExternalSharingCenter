@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
 		..\TODO.md = ..\TODO.md
-		..\docs\user-guide.md = ..\docs\user-guide.md
+		..\doc\user-guide.md = ..\doc\user-guide.md
 	EndProjectSection
 EndProject
 Global

@@ -43,7 +43,7 @@ The start page of ESC is shown below. Out of the box, the design is
 kept simple, allowing ESC administrators to customize it for local
 needs.
 
-![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/docs/external-sharing-center-overview.png)
+![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/doc/external-sharing-center-overview.png)
 
 The Quick launch on the left links to two page: *Start* is the front
 page and *External user guide* is a step-wise guide to create a new
@@ -65,7 +65,7 @@ introduction and summary):
 
     The text should be self-explanatory.
 
-    ![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/docs/site-collection-external-user-guide-step-1-of-5.png)
+    ![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/doc/site-collection-external-user-guide-step-1-of-5.png)
 
   - Site collection selection
 
@@ -73,7 +73,7 @@ introduction and summary):
     site collection to which the user has at least read access. It's
     the same list displayed on the start page.
 
-    ![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/docs/site-collection-external-user-guide-step-2-of-5.png)
+    ![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/doc/site-collection-external-user-guide-step-2-of-5.png)
 
   - User selection
 
@@ -83,7 +83,7 @@ introduction and summary):
     text field. Once the sharing is created, the new mail address is
     added to ESC and included in the dropdown for future sharings.
 
-    ![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/docs/site-collection-external-user-guide-step-3-of-5.png)
+    ![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/doc/site-collection-external-user-guide-step-3-of-5.png)
 
     Behind the scenes, SharePoint Online doesn't store external users
     inside each site collection. Instead, users are added to Azure
@@ -101,7 +101,7 @@ introduction and summary):
     multiple site collection, each with a different start and end
     date.
 
-    ![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/docs/site-collection-external-user-guide-step-4-of-5.png)
+    ![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/doc/site-collection-external-user-guide-step-4-of-5.png)
 
   - Summary
 
@@ -110,7 +110,7 @@ introduction and summary):
     possibly the user) within ESC. After being redirect to the start page, 
     the new sharing becomes visible.
 
-    ![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/docs/site-collection-external-user-guide-step-5-of-5.png)
+    ![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/doc/site-collection-external-user-guide-step-5-of-5.png)
 
 ## Mail notifications
 
@@ -128,7 +128,7 @@ for a single site collection in case multiple users require attention
 or it may contain multiple site collections if the users are spread
 out.
 
-![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/docs/external-user-mail-template.png)
+![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/doc/external-user-mail-template.png)
 
 Because mails are static by nature, they don't contain direct links to
 the External user guide. Actual information may have changed since the
