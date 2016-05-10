@@ -35,7 +35,7 @@
   <ItemGroup>
     <Reference Include="Bugfree.Spo.Cqrs.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\Bugfree.Spo.Cqrs.Core.dll</HintPath>
+      <HintPath>..\..\lib\Bugfree.Spo.Cqrs.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Office.Client.Policy, Version=16.1.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.SharePointOnline.CSOM.16.1.5026.1200\lib\net45\Microsoft.Office.Client.Policy.dll</HintPath>
