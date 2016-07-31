@@ -23,7 +23,8 @@ namespace Bugfree.Spo.ExternalSharingCenter.Cli
             //    lists. Lack start and end dates for existing sharing, default values are
             //    provided.
             //controller.ImportExistingSharings(
-            //    new Core.Commands.ImportSettings {
+            //    new Core.Commands.ImportSettings 
+            //    {
             //        ExternalUserAddedComment = "Imported by tool",
             //        SiteCollectionExternalUserAddedComment = "Imported by tool",
             //        SiteCollectionExternalUserStart = DateTime.Today,
@@ -32,9 +33,9 @@ namespace Bugfree.Spo.ExternalSharingCenter.Cli
 
             // 3. These are the day to day operations. Either run through the CLI or as
             //    part of the Azure WebJob.
-            //controller.ExpireUsers();
-            //controller.SendExpirationWarnings();
-            //controller.UpdateSiteCollections();
+            controller.ExpireUsers();
+            controller.SendExpirationWarnings();
+            controller.UpdateSiteCollections();
         }
     }
 }

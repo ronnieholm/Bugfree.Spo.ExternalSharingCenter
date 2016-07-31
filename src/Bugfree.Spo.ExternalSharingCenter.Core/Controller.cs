@@ -144,8 +144,8 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
                 var siteCollectionWithRecipientAsSiteUser = expirations.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
                 using (var expirationMailContext = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url)) 
                 {
-                    //new SendMail(_logger).Execute(expirationMailContext, e);
-                    //new AddSentMail(_logger).Execute(sentMails, e);
+                    new SendMail(_logger).Execute(expirationMailContext, e);
+                    new AddSentMail(_logger).Execute(sentMails, e);
                 }
             });
 
@@ -153,7 +153,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
             {
                 using (var expirationMailCtx = CreateClientContext(e.SiteCollection.Url)) 
                 {
-                    //new RemoveUserFromSiteCollection(_logger).Execute(expirationMailCtx, e.SharePointExternalUser.UserId);
+                    new RemoveUserFromSiteCollection(_logger).Execute(expirationMailCtx, e.SharePointExternalUser.UserId);
                 }
             });
         }
@@ -198,7 +198,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
 
             Initialize();
 
-            var warnings = new GenerateExpirationWarnings(_logger).Execute(_db, /*DateTime.Now.ToUniversalTime()*/ new DateTime(2017, 1, 2), new TimeSpan(_settings.ExpirationWarningDays, 0, 0, 0));
+            var warnings = new GenerateExpirationWarnings(_logger).Execute(_db, DateTime.Now.ToUniversalTime(), new TimeSpan(_settings.ExpirationWarningDays, 0, 0, 0));
             warnings.Where(n => n.SharePointExternalUser.InvitedBy == null).ToList().ForEach(n =>
             {
                 var sc = _db.SharedSiteCollections.Single(sc1 => sc1.Url == n.SiteCollection.Url);
@@ -229,8 +229,8 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
                 var siteCollectionWithRecipientAsSiteUser = warnings.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
                 using (var warningCtx = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url))
                 {
-                    //new SendMail(_logger).Execute(warningCtx, e);
-                    //new AddSentMail(_logger).Execute(sentMails, e);
+                    new SendMail(_logger).Execute(warningCtx, e);
+                    new AddSentMail(_logger).Execute(sentMails, e);
                 }
             });
         }
