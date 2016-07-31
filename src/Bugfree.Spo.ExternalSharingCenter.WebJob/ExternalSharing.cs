@@ -18,6 +18,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.WebJob
                 var controller = new Controller(logger, settings);
                 controller.ExpireUsers();
                 controller.SendExpirationWarnings();
+                controller.UpdateSiteCollections();
             }
             catch (Exception e)
             {
