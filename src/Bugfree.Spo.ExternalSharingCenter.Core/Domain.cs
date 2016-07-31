@@ -8,11 +8,12 @@ namespace Bugfree.Spo.ExternalSharingCenter
     {
         // conceptually, the relational data model looks like
         //
-        //   SiteCollections 1---*  SiteCollectionExternalUsers *---1 ExternalUsers
+        //   SharedSiteCollection 1---*  SiteCollectionExternalUser *---1 ExternalUser
         //
-        // although site collections aren't stored in a separate table. Instead
-        // the site collection is a Url field inside SiteCollectionExternalUsers, 
-        // leading to a bit of controlled redudancy.
+        // with SharedSiteCollections populated by quering the tenant API and the other
+        // entities coming from backing lists within the External Sharing Center. In practice,
+        // the SharedSiteCollection instance is a Url field inside SiteCollectionExternalUsers.
+        // Using the Url field, lookup of the SharedSiteCollection instance can take place.
         public List<SiteCollectionExternalUser> SiteCollectionExternalUsers { get; set; }
         public List<ExternalUser> ExternalUsers { get; set; }
         public List<SharedSiteCollection> SharedSiteCollections { get; set; }
@@ -35,7 +36,7 @@ namespace Bugfree.Spo.ExternalSharingCenter
         public SentMailType Type { get; set; }
     }
 
-    // historical mail as stored within the Sent mail list
+    // archive of sent mail (useful for diagnostic purposes)
     public class SentMail
     {
         public int Id { get; set; }
@@ -44,7 +45,7 @@ namespace Bugfree.Spo.ExternalSharingCenter
         public DateTime Created { get; set; }
     }
 
-    // representation of expiration for furher processing
+    // expiration for further processing
     public class Expiration
     {
         public SharedSiteCollection SiteCollection { get; set; }
@@ -52,7 +53,7 @@ namespace Bugfree.Spo.ExternalSharingCenter
         public DateTime ExpirationDate { get; set; }
     }
 
-    // representation of expiration warning for further processing
+    // expiration warning for further processing
     public class ExpirationWarning
     {
         public SharedSiteCollection SiteCollection { get; set; }
@@ -72,7 +73,15 @@ namespace Bugfree.Spo.ExternalSharingCenter
         public DateTime WhenCreated { get; set; }
     }
 
-    // historical user as stored within the External user list
+    // site collection as reported by SharePoint tenant
+    public class SharedSiteCollection {
+        public Uri Url { get; set; }
+        public string Title { get; set; }
+        public string FallbackOwnerMail { get; set; }
+        public List<SharePointExternalUser> ExternalUsers { get; set; }
+    }
+
+    // external user stored within ExternalUsers list
     public class ExternalUser
     {
         public int Id { get; set; }
@@ -81,16 +90,7 @@ namespace Bugfree.Spo.ExternalSharingCenter
         public string Comment { get; set; }
     }
 
-    // site collection as reported by SharePoint tenant
-    public class SharedSiteCollection
-    {
-        public Uri Url { get; set; }
-        public string Title { get; set; }
-        public string FallbackOwnerMail { get; set; }
-        public List<SharePointExternalUser> ExternalUsers { get; set; }
-    }
-
-    // historical sharing between Site collections and external users entities
+    // sharing between Site collections and external users entities
     // Think of the properties as properties on the relation itself or the
     // junction table in an n:m relationship.
     public class SiteCollectionExternalUser
@@ -102,5 +102,6 @@ namespace Bugfree.Spo.ExternalSharingCenter
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
         public string Comment { get; set; }
+        public DateTime Created { get; set; }
     }
 }

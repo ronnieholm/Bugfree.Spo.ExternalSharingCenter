@@ -49,7 +49,8 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
                     ExternalUserId = guidMapper(i[C.ExternalUserId]),
                     Start = (DateTime)i[C.Start],
                     End = (DateTime)i[C.End],
-                    Comment = (string)i[C.Comment]
+                    Comment = (string)i[C.Comment],
+                    Created = (DateTime)i["Created"]
                 }
             );
         }

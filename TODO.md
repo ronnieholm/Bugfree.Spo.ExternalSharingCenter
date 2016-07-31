@@ -13,7 +13,6 @@
   but the feature may have been overlooked.
 - How to restore Nuget packages from command-line?
 - Add GuidId column to Sentmail
-- Write out warnings to console where InvitedAs != AcceptedAs
 - Investigate how the REST API for external sharing works
 - Build-in telemetry into the frontend code determine usage frequency and patterns
 - Create config list / config.json file and deploy to document library to hold app wise settings

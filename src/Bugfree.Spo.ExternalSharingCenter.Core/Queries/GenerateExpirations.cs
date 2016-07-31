@@ -17,7 +17,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
             {
                 foreach (var eu in sc.ExternalUsers)
                 {
-                    var externalUserCandidate = db.ExternalUsers.SingleOrDefault(u => u.Mail == eu.InvitedAs.ToLower());
+                    var externalUserCandidate = db.ExternalUsers.SingleOrDefault(u => u.Mail == eu.InvitedAs);
 
                     // when external user isn't present in External users list, it indicates the user 
                     // was added without going through the External Sharing Center. Hence we expire 

@@ -18,11 +18,8 @@ namespace Bugfree.Spo.ExternalSharingCenter
             Initialize();
         }
 
-        private string GetString(string s)
-        {
-            return ConfigurationManager.AppSettings[s];
-        }
-
+        private string GetString(string k) => ConfigurationManager.AppSettings[k];
+        
         private void Initialize()
         {
             ExternalSharingCenterUrl = new Uri(GetString("ExternalSharingCenterUrl"));

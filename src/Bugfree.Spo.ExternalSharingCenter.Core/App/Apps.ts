@@ -636,24 +636,25 @@ module Bugfree.Spo.ExternalSharingCenter.Services.GetSiteCollections {
             const deferred = this.$q.defer<GetSiteCollectionResponse>();
 
             // primitive switching between site collection retrieval strategies
-            if (false) {
-                this.$http.defaults.headers.common["Accept"] = "application/json;odata=verbose";
-                this.$http
-                    .get("../_api/web/lists/getbytitle('site collections')/items?$top=5000&$select=Id,SiteCollectionTitle,SiteCollectionUrl")
-                    .then(response => {
-                        const data: any = response.data;
-                        const results: any[] = data.d.results;
-                        let siteCollections = results.map((s, _, __) => {
-                            return {
-                                id: s.Id,
-                                title: s.SiteCollectionTitle,
-                                url: s.SiteCollectionUrl
-                            };
-                        });
-                        deferred.resolve({ state: GetSiteCollectionState.Ok, siteCollections: siteCollections });
-                    },
-                    _ => deferred.reject({ state: GetSiteCollectionState.Error, siteCollections: [] }));
-            } else {
+            //if (false) {
+            //    this.$http.defaults.headers.common["Accept"] = "application/json;odata=verbose";
+            //    this.$http
+            //        .get("../_api/web/lists/getbytitle('site collections')/items?$top=5000&$select=Id,SiteCollectionTitle,SiteCollectionUrl")
+            //        .then(response => {
+            //            const data: any = response.data;
+            //            const results: any[] = data.d.results;
+            //            let siteCollections = results.map((s, _, __) => {
+            //                return {
+            //                    id: s.Id,
+            //                    title: s.SiteCollectionTitle,
+            //                    url: s.SiteCollectionUrl
+            //                };
+            //            });
+            //            deferred.resolve({ state: GetSiteCollectionState.Ok, siteCollections: siteCollections });
+            //        },
+            //        _ => deferred.reject({ state: GetSiteCollectionState.Error, siteCollections: [] }));
+            //} else
+            {
                 const baseUrl = Helpers.getLocationOrigin();
                 const queryText = `ContentClass:STS_Site Path:${baseUrl}/sites Path:${baseUrl}/teams`;
                 const selectProperties = ["Title", "OriginalPath"];

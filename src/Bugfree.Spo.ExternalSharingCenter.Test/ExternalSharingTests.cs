@@ -214,6 +214,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
             new ExternalUser
             {
                 Id = 42,
+                ExternaluserId = Guid.Empty,
                 Mail = "test@test.com"
             }
         };
@@ -233,32 +234,16 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
                             ExternalUserId = Guid.Empty,
                             SiteCollectionUrl = new Uri("http://test/siteCollection"),
                             Start = new DateTime(2015, 11, 16),
-                            End = new DateTime(2015, 11, 30, 23, 59, 59)
-                        },
-                        new SiteCollectionExternalUser
-                        {
-                            ExternalUserId = Guid.Empty,
-                            SiteCollectionUrl = new Uri("http://test/siteCollection"),
-                            Start = new DateTime(2015, 11, 16),
-                            End = new DateTime(2015, 12, 30, 23, 59, 59)
-                        },
-                        new SiteCollectionExternalUser
-                        {
-                            ExternalUserId = Guid.Empty,
-                            SiteCollectionUrl = new Uri("http://test/siteCollection"),
-                            Start = new DateTime(2015, 11, 16),
-                            End = new DateTime(2015, 11, 19)
-                        } 
+                            End = new DateTime(2015, 11, 30, 23, 59, 59),
+                            Created = new DateTime(2015, 11, 16)
+                        }
                     }           
             };
 
             var now = new DateTime(2015, 11, 28);
-            var expirationWarnings = new GenerateExpirationWarnings(_logger).Execute(db, now);
-            Assert.Equal(db.SiteCollectionExternalUsers.Count, expirationWarnings.Count());
-
+            var expirationWarnings = new GenerateExpirationWarnings(_logger).Execute(db, now, new TimeSpan(3, 0, 0, 0));
+            Assert.Equal(1, expirationWarnings.Count);
             Assert.Equal(db.SiteCollectionExternalUsers[0].End - now, new TimeSpan(2, 23, 59, 59));
-            Assert.Equal(db.SiteCollectionExternalUsers[1].End - now, new TimeSpan(32, 23, 59, 59));
-            Assert.Equal(db.SiteCollectionExternalUsers[2].End - now, new TimeSpan(-9, 00, 00, 00));
         }
     }
 }

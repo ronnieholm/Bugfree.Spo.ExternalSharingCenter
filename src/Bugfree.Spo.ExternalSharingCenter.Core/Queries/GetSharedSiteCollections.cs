@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using Microsoft.Online.SharePoint.TenantManagement;
 using Microsoft.SharePoint.Client;
 using Bugfree.Spo.Cqrs.Core;
+using Bugfree.Spo.Cqrs.Core.Queries;
+using Bugfree.Spo.Cqrs.Core.Utilities;
+using Microsoft.Online.SharePoint.TenantAdministration;
 
 namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
 {
@@ -15,7 +18,14 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
         {
             Logger.Verbose($"About to execute {nameof(GetSharedSiteCollections)}");
 
-            var tenantSiteCollections = new GetTenantSiteCollections(Logger).Execute(ctx);
+            var url = ctx.Url;
+            var tenantAdminUrl = new AdminUrlInferrer().InferAdminFromTenant(new Uri(url.Replace(new Uri(url).AbsolutePath, "")));
+
+            var tenantSiteCollections = new List<SiteProperties>();
+            using (var tenantContext = new ClientContext(tenantAdminUrl) { Credentials = ctx.Credentials }) 
+            { 
+                tenantSiteCollections = new GetTenantSiteCollections(Logger).Execute(tenantContext);
+            }
             Logger.Verbose($"{tenantSiteCollections.Count()} total site collections found on tenant");
 
             var withSharingEnabled = 

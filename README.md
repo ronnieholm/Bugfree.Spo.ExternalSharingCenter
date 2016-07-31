@@ -11,7 +11,7 @@ information with too many for too long.
 The External Sharing Center (from here on ESC) adds a layer of
 management and governance on top of the out of the box features. It
 does so by providing the overview and support for creating and
-maintaining sharings with metadta such as start and end date. As the
+maintaining sharings with metadata such as start and end date. As the
 end date nears, ESC reminds the inviter that a sharing is about to
 expire and provides the option to extend it. Once expired, ESC revokes
 user access from the site collection and sends an access revocation
@@ -55,7 +55,7 @@ restore and transpiles the TypeScript which powers the frontend.
 The CLI is used to partially setup the frontend, to import existing
 sharings, to expire user access, and to generate and send mails. The
 WebJob serves a similar role running in Azure, but only generates mail
-and expires user access (both share a common core).
+and expires user access (both backends share a common core).
 
 Before running the CLI (or WebJob), AppSettings inside
 Bugfree.Spo.ExternalSharingCenter.Cli/App.config must be defined as
@@ -178,21 +178,9 @@ search cannot filter on site collections with sharing enabled, causing
 it to display any site collection which the user has access to. As an
 alternative, the backend maintains a list of site collection with
 sharing enabled which the frontend can be switched to display
-instead. By combining the two, the frontend displays only site
-collections the user has access to and which have sharing enabled.
-
-An important consideration is whether to treat the InvitedAs or the
-AcceptedAs property of an external user as the truth. From a technical
-point of view both may be equally valid as long as the choice is
-consistent across frontend and backend. Trouble arises when the invite
-goes to one address and the user accepts from another. Then if ESC is
-retroactively introduced, every mismatch sharing is considered
-unauthorized and is revoked. The first deployment of ESC happened
-retroactively and about 150 of 370 sharings, or 40%, didn't match
-up. Forcing inviters to re-share and users to accept from the right
-address might be a lot of work. Therefore, the backend may be
-configured so that sharings involving an external user added before a
-certain date are ignored.
+instead. By combining the two options, the frontend can be made to display
+only site collections to which the user has access and which have sharing 
+enabled.
 
 ## Additional resources
 
