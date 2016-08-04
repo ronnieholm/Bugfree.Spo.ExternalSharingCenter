@@ -78,7 +78,8 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
             // helps diagnose issues with the slightly buggy tanant API
             var siteCollectionsCount = _db.SharedSiteCollections.Count();
             var externalUsersCount = 0;
-            foreach (var sc in _db.SharedSiteCollections) {
+            foreach (var sc in _db.SharedSiteCollections) 
+            {
                 externalUsersCount += sc.ExternalUsers.Count();
                 _logger.Verbose($"{sc.ExternalUsers.Count()} {sc.Url}");
             }
@@ -153,7 +154,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
             {
                 using (var expirationMailCtx = CreateClientContext(e.SiteCollection.Url)) 
                 {
-                    new RemoveUserFromSiteCollection(_logger).Execute(expirationMailCtx, e.SharePointExternalUser.UserId);
+                    new DeleteUserFromSiteCollection(_logger).Execute(expirationMailCtx, e.SharePointExternalUser.UserId);
                 }
             });
         }
@@ -261,6 +262,49 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
 
             _db.SharedSiteCollections.ForEach(ssc => 
                 new AddSiteCollection(_logger).Execute(siteCollectionsList, ssc));
+        }
+
+        public void EnsureInternalListConsistency() 
+        {
+            // we don't need actual sharings as we're working with lists on External Sharing Center
+            // only. Collecting actual sharings takes a long time, so rather than calling Initialize()
+            // we take care of initialization ourselves.
+            _context = CreateClientContext(_settings.ExternalSharingCenterUrl);
+            var lists = _context.Web.Lists;
+            var externalUserList = lists.GetByTitle(C.ExternalUsersTitle);
+            var siteCollectionExternalUserList = lists.GetByTitle(C.SiteCollectionExternalUsersTitle);
+            _context.Load(externalUserList);
+            _context.Load(siteCollectionExternalUserList);
+            _context.ExecuteQuery();
+
+            var externalUsers = new GetExternalUsers(_logger).Execute(externalUserList);
+            var siteCollectionExternalUsers = new GetSiteCollectionExternalUsers(_logger).Execute(siteCollectionExternalUserList);
+
+            _logger.Verbose("About to check for SiteCollectionExternalUsers rows with no matching ExternalUsers row");
+            siteCollectionExternalUsers
+                .Where(sceu => !externalUsers.Any(eu => eu.ExternaluserId == sceu.ExternalUserId))
+                .ToList()
+                .ForEach(sceu => 
+                {
+                    _logger.Verbose($"About to delete site collection external user with Url '{sceu.SiteCollectionUrl}' and ExternalUserId '{sceu.ExternalUserId}'");
+                    var i = siteCollectionExternalUserList.GetItemById(sceu.Id);
+                    i.DeleteObject();
+                    siteCollectionExternalUserList.Update();
+                    siteCollectionExternalUserList.Context.ExecuteQuery();
+                });
+
+            _logger.Verbose("About to check for ExternalUsers rows with no matching SiteCollectionExternalUsers row");
+            externalUsers
+                .Where(eu => !siteCollectionExternalUsers.Any(sceu => sceu.ExternalUserId == eu.ExternaluserId))
+                .ToList()
+                .ForEach(eu => 
+                {
+                    _logger.Verbose($"About to delete external user '{eu.Mail}'");
+                    var i = externalUserList.GetItemById(eu.Id);
+                    i.DeleteObject();
+                    externalUserList.Update();
+                    externalUserList.Context.ExecuteQuery();
+                 });
         }
 
         public void Dispose()

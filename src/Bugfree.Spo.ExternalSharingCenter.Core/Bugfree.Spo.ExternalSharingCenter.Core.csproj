@@ -113,7 +113,7 @@
     <Compile Include="Commands\AddSiteCollectionExternalUser.cs" />
     <Compile Include="Commands\CreateExternalSharingCenterWeb.cs" />
     <Compile Include="Commands\ImportExistingSharings.cs" />
-    <Compile Include="Commands\RemoveUserFromSiteCollection.cs" />
+    <Compile Include="Commands\DeleteUserFromSiteCollection.cs" />
     <Compile Include="Commands\SendMail.cs" />
     <Compile Include="Domain.cs" />
     <Compile Include="Queries\GetSentMails.cs" />
