@@ -31,6 +31,7 @@ using Bugfree.Spo.Cqrs.Core;
 using Bugfree.Spo.ExternalSharingCenter.Core.Commands;
 using Bugfree.Spo.ExternalSharingCenter.Core.Queries;
 using C = Bugfree.Spo.ExternalSharingCenter.Core.Commands.CreateExternalSharingCenterWeb;
+using XE = System.Xml.Linq.XElement;
 
 namespace Bugfree.Spo.ExternalSharingCenter.Core
 {
@@ -305,6 +306,57 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
                     externalUserList.Update();
                     externalUserList.Context.ExecuteQuery();
                  });
+        }
+
+        public void ExportInternalLists(string xmlFilePath) 
+        {
+            _logger.Verbose($"About to export internal lists to '{xmlFilePath}'");
+            _context = CreateClientContext(_settings.ExternalSharingCenterUrl);
+            var lists = _context.Web.Lists;
+            var externalUserList = lists.GetByTitle(C.ExternalUsersTitle);
+            var siteCollectionExternalUserList = lists.GetByTitle(C.SiteCollectionExternalUsersTitle);
+            var sentMailList = lists.GetByTitle(C.SentMailTitle);
+            _context.Load(externalUserList);
+            _context.Load(siteCollectionExternalUserList);
+            _context.Load(sentMailList);
+            _context.ExecuteQuery();
+
+            // rather than using one of the build-in serializers, we handle serialization ourselves.
+            // It makes for more explicit and robust serialization over using attributes and the like.
+            var serializedExternalUsers =
+                new GetExternalUsers(_logger).Execute(externalUserList).Select(eu =>
+                    new XE(nameof(ExternalUser),
+                        new XE(nameof(ExternalUser.Id), eu.Id),
+                        new XE(nameof(ExternalUser.ExternaluserId), eu.ExternaluserId),
+                        new XE(nameof(ExternalUser.Mail), eu.Mail),
+                        new XE(nameof(ExternalUser.Comment), eu.Comment))).ToList();
+
+            var serializedSiteCollectionExternalUsers =
+                new GetSiteCollectionExternalUsers(_logger).Execute(siteCollectionExternalUserList).Select(sceu =>
+                    new XE(nameof(SiteCollectionExternalUser),
+                        new XE(nameof(SiteCollectionExternalUser.Id), sceu.Id),
+                        new XE(nameof(SiteCollectionExternalUser.SiteCollectionExternalUserId), sceu.SiteCollectionExternalUserId),
+                        new XE(nameof(SiteCollectionExternalUser.SiteCollectionUrl), sceu.SiteCollectionUrl),
+                        new XE(nameof(SiteCollectionExternalUser.ExternalUserId), sceu.ExternalUserId),
+                        new XE(nameof(SiteCollectionExternalUser.Start), sceu.Start),
+                        new XE(nameof(SiteCollectionExternalUser.End), sceu.End),
+                        new XE(nameof(SiteCollectionExternalUser.Comment), sceu.Comment))).ToList();
+
+            var serializedSentMails =
+                new GetSentMails(_logger).Execute(sentMailList).Select(sm =>
+                    new XE(nameof(SentMail),
+                        new XE(nameof(SentMail.Id), sm.Id),
+                        new XE(nameof(SentMail.To), sm.To),
+                        new XE(nameof(SentMail.Type), sm.Type),
+                        new XE(nameof(SentMail.Created), sm.Created))).ToList();
+
+            var export =
+                new XE("Export",
+                    new XE("Timestamp", DateTime.Now.ToUniversalTime()),
+                    new XE("ExternalUsers", serializedExternalUsers),
+                    new XE("SiteCollectionExternalUsers", serializedSiteCollectionExternalUsers));
+
+            export.Save(xmlFilePath);
         }
 
         public void Dispose()

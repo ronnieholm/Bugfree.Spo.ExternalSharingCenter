@@ -234,10 +234,9 @@ namespace Bugfree.Spo.ExternalSharingCenter.Test
                             ExternalUserId = Guid.Empty,
                             SiteCollectionUrl = new Uri("http://test/siteCollection"),
                             Start = new DateTime(2015, 11, 16),
-                            End = new DateTime(2015, 11, 30, 23, 59, 59),
-                            Created = new DateTime(2015, 11, 16)
+                            End = new DateTime(2015, 11, 30, 23, 59, 59),                          
                         }
-                    }           
+                    }
             };
 
             var now = new DateTime(2015, 11, 28);

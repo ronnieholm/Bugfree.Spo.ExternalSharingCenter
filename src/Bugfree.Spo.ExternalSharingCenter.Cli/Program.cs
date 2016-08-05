@@ -33,9 +33,12 @@ namespace Bugfree.Spo.ExternalSharingCenter.Cli
 
             // 3. These are the day to day operations. Either run through the CLI or as
             //    part of the Azure WebJob.
+            var currentTime = DateTime.Now.ToUniversalTime().ToString("o").Replace(":", "-");
+            controller.ExportInternalLists($"Export-{currentTime}");
             controller.ExpireUsers();
             controller.SendExpirationWarnings();
             controller.UpdateSiteCollections();
+            controller.EnsureInternalListConsistency();
         }
     }
 }

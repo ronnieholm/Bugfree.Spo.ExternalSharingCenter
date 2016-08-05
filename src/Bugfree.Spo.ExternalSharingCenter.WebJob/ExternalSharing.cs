@@ -16,9 +16,12 @@ namespace Bugfree.Spo.ExternalSharingCenter.WebJob
             try
             {
                 var controller = new Controller(logger, settings);
+                var currentTime = DateTime.Now.ToUniversalTime().ToString("o").Replace(":", "-");
+                controller.ExportInternalLists($"Export-{currentTime}");
                 controller.ExpireUsers();
                 controller.SendExpirationWarnings();
                 controller.UpdateSiteCollections();
+                controller.EnsureInternalListConsistency();
             }
             catch (Exception e)
             {
