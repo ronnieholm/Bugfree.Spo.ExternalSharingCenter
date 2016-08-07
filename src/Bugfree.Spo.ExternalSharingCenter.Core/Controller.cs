@@ -32,6 +32,7 @@ using Bugfree.Spo.ExternalSharingCenter.Core.Commands;
 using Bugfree.Spo.ExternalSharingCenter.Core.Queries;
 using C = Bugfree.Spo.ExternalSharingCenter.Core.Commands.CreateExternalSharingCenterWeb;
 using XE = System.Xml.Linq.XElement;
+using XC = System.Xml.Linq.XCData;
 
 namespace Bugfree.Spo.ExternalSharingCenter.Core
 {
@@ -349,7 +350,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
                         new XE(nameof(SentMail.From), sm.From),
                         new XE(nameof(SentMail.To), sm.To),
                         new XE(nameof(SentMail.Subject), sm.Subject),
-                        new XE(nameof(SentMail.Body), sm.Body),
+                        new XE(nameof(SentMail.Body), new XC(sm.Body.ToString())),
                         new XE(nameof(SentMail.Type), sm.Type),
                         new XE(nameof(SentMail.Created), sm.Created))).ToList();
 
