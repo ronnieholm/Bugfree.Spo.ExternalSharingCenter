@@ -27,7 +27,10 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
                 new SentMail
                 {
                     Id = i.Id,
-                    To = ((string)i[C.To]),
+                    From = (string)i[C.From],
+                    To = (string)i[C.To],
+                    Subject = (string)i[C.Subject],
+                    Body = XElement.Parse((string)i[C.Body]),
                     Type = (SentMailType)(int.Parse(i[C.SentMailType].ToString())),
                     Created = (DateTime)i["Created"]
                 }

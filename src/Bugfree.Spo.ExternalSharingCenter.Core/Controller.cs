@@ -346,7 +346,10 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
                 new GetSentMails(_logger).Execute(sentMailList).Select(sm =>
                     new XE(nameof(SentMail),
                         new XE(nameof(SentMail.Id), sm.Id),
+                        new XE(nameof(SentMail.From), sm.From),
                         new XE(nameof(SentMail.To), sm.To),
+                        new XE(nameof(SentMail.Subject), sm.Subject),
+                        new XE(nameof(SentMail.Body), sm.Body),
                         new XE(nameof(SentMail.Type), sm.Type),
                         new XE(nameof(SentMail.Created), sm.Created))).ToList();
 
@@ -354,8 +357,8 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
                 new XE("Export",
                     new XE("Timestamp", DateTime.Now.ToUniversalTime()),
                     new XE("ExternalUsers", serializedExternalUsers),
-                    new XE("SiteCollectionExternalUsers", serializedSiteCollectionExternalUsers));
-
+                    new XE("SiteCollectionExternalUsers", serializedSiteCollectionExternalUsers),
+                    new XE("SentMails", serializedSentMails));
             export.Save(xmlFilePath);
         }
 

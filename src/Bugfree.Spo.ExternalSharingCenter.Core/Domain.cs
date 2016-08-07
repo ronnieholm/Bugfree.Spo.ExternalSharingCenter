@@ -26,7 +26,7 @@ namespace Bugfree.Spo.ExternalSharingCenter
         Expiration = 2
     }
 
-    // constructed mail to be sent to a InvitedBy user
+    // mail to be sent to an InvitedBy user
     public class Email
     {
         public string From { get; set; }
@@ -36,12 +36,10 @@ namespace Bugfree.Spo.ExternalSharingCenter
         public SentMailType Type { get; set; }
     }
 
-    // archive of sent mail (useful for diagnostic purposes)
-    public class SentMail
+    // archive of sent mail (contains "system" fields not part of Email type)
+    public class SentMail : Email
     {
         public int Id { get; set; }
-        public string To { get; set; }
-        public SentMailType Type { get; set; }
         public DateTime Created { get; set; }
     }
 
