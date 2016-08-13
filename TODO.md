@@ -12,3 +12,4 @@
 - Investigate how the REST API for external sharing works
 - Build-in telemetry into the frontend code determine usage frequency and patterns
 - Create config list / config.json file and deploy to document library to hold app wise settings
+- If site collection with sharings no longer exist, adjust End date of sharings such that users don't receive warning and expiration mails for non-existing site collection in the future
