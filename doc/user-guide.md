@@ -24,9 +24,9 @@ collections.
 Sharing a site collection with an external user has already been
 [thoroughly
 documented](http://en.share-gate.com/blog/ultimate-guide-deal-with-office-365-external-sharing#shareContent). One
-caviat though is that when an external user accepts an invitation, the
+caveat though is that when an external user accepts an invitation, the
 user must be logged in with the proper Microsoft account. To
-SharePoint Online, a proper account is any Microsft account, but a
+SharePoint Online, a proper account is any Microsoft account, but a
 user may have multiple of those -- work, private, and Office 365
 accounts which are by default Microsoft accounts -- and using the
 right one is essential to logging in and receiving mails from
@@ -37,8 +37,7 @@ account, the recipient must register the address as a Microsoft
 account. Clicking the link in the invitation mail provides the
 recipient with the necessary information. Accepting the invitation
 from another account than the one to which the invitation is sent is
-prohibited by SharePoint Online. Attempting to do so results in a
-Microsoft error message stating to.
+prohibited by SharePoint Online.
 
 ## Managing external users within the External Sharing Center
 
@@ -48,7 +47,7 @@ needs.
 
 ![alt text](https://raw.githubusercontent.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/master/doc/external-sharing-center-overview.png)
 
-The Quick launch menu on the left links to two page: *Start* is the
+The Quick launch menu on the left links to two pages: *Start* is the
 front page and *External user guide* is a step-wise guide to either
 create a new sharing or modify an existing one. Adding or modifying a
 sharing is done by clicking *External user guide* or clicking the
@@ -118,7 +117,7 @@ introduction and summary):
 
 Based on the provided end date, ESC reminds inviters when a sharing is
 about to end and when it has ended. As a rule of thumb, mails are sent
-to whomever invited the user. In case that user no longer exist, one
+to whoever invited the user. In case that user no longer exists, one
 of the users from the site collection's Owner's group becomes the new
 recipient of the mail.
 
