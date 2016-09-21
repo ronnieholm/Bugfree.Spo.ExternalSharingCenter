@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Bugfree.Spo.ExternalSharingCenter 1.0.3 (2016-09-21)
+
+* [#6](https://github.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/issues/6) - Invalid recipient of warning and expiration mails when inviter is external user
+
 ## Bugfree.Spo.ExternalSharingCenter 1.0.2 (2016-08-04)
 
 * [#4](https://github.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/issues/4) - Ensure internal consistency between SharePoint lists on External Sharing Center
