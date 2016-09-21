@@ -146,6 +146,11 @@ isn't supported. If these finer-grained sharing options become
 relevant, consider creating a dedicated sharing site collection
 besides the regular ones.
 
+In principle, SharePoint Online supports external users inviting
+external users. While ESC doesn't prevent it, when the inviter is an
+external user, ESC sends no warning and expiration mails to the 
+inviter.
+
 ## Design notes
 
 Within ESC, we try hard not to replicate build-in SharePoint dialogs

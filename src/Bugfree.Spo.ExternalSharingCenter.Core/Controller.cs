@@ -215,6 +215,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
 
             var defaultTimeStamp = new TimeSpan();
             var sentMailArchieve = new GetSentMails(_logger).Execute(sentMails);
+
             var warningMailsThrottled =
                 warningMails.Where(m =>
                 {
@@ -232,6 +233,24 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
                 var siteCollectionWithRecipientAsSiteUser = warnings.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
                 using (var warningCtx = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url))
                 {
+                    // limitation:
+                    // in case the inviter is an external user, SharePoint identifies the inviter as
+                    // "live.com#user@domain.dk" or "user_domain.dk#ext#@tenant.onmicrosoft.com (the
+                    // normal case is "user@domain.dk"). In the first case, tranforming the username 
+                    // into user@domain.dk is simple. In the second case it's user@domain.dk, but we
+                    // assume the email address doesn't itself contain underscores. In reality, even
+                    // though usernames resemble email addresses, they aren't email addresses, but 
+                    // SharePoint designated usernames.
+                    //
+                    // Even if we could reliable transform these SharePoint usernames into valid mail 
+                    // addresses, SharePoint's SMTP service, which we use to send mail, is async and
+                    // doesn't display exception during sending. In practice, it turns out that mail
+                    // never arrives at these special addresses. 
+                    //
+                    // Changing the SendMail command to use a real SMTP server would alliviate this 
+                    // problem. However, we consider external users inviting external users an edge
+                    // case and thus silently ignores this problem. Sharings created by such users 
+                    // are silently revoked on their End date.
                     new SendMail(_logger).Execute(warningCtx, e);
                     new AddSentMail(_logger).Execute(sentMails, e);
                 }
