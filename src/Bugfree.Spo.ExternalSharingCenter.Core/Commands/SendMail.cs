@@ -13,6 +13,9 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Commands
             Logger.Verbose($"About to execute {nameof(SendMail)} for recipient '{mail.To}'");
             Utility.SendEmail(ctx, new EmailProperties
             {
+                // Starting September 2, 2016 emails sent through SharePoint Online
+                // originate from no-reply@sharepointonline.com. Specifying a different
+                // from address is ignored by SharePoint Online.
                 From = mail.From,
                 To = new[] { mail.To },
                 Subject = mail.Subject,

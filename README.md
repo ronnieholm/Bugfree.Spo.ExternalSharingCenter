@@ -151,6 +151,10 @@ external users. While ESC doesn't prevent it, when the inviter is an
 external user, ESC sends no warning and expiration mails to the 
 inviter.
 
+Starting September 2, 2016 emails sent through SharePoint Online
+originate from no-reply@sharepointonline.com. Specifying a different
+from address is ignored by SharePoint Online.
+
 ## Design notes
 
 Within ESC, we try hard not to replicate build-in SharePoint dialogs

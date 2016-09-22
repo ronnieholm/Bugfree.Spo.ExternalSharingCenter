@@ -1,6 +1,6 @@
 # TODO
 
-- Switch to PnP Widget Wrangler (or custom implement relevant parts)
+- Switch frontend to SharePoint Framework
 - Have backend store timestamp of last run in property bag / config list for JS to display on frontpage
 - Add filtering dropdowns on top of overview table to enable better working with a large table
 - Make unit tests more robust (don't rely on null guid which isn't unique)
