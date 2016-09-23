@@ -77,7 +77,8 @@ namespace Bugfree.Spo.ExternalSharingCenter.StressTest
                     delta.ForEach(s => Console.WriteLine(s.DisplayName));
                     break;
                 }               
-            } while (true);
+            }
+            while (true);
         }
     }
 }
