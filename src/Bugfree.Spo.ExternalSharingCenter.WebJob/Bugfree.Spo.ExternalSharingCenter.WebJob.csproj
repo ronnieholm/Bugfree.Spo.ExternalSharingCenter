@@ -112,6 +112,7 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\PublishProfiles\BugfreeSpoExternalSharingCenterWebJob - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\BugfreeSpoExternalSharingCenterWebJob - Web Deploy.pubxml" />
     <None Include="Properties\webjob-publish-settings.json" />
   </ItemGroup>

@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		..\doc\user-guide.md = ..\doc\user-guide.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bugfree.Spo.ExternalSharingCenter.StressTest", "Bugfree.Spo.ExternalSharingCenter.StressTest\Bugfree.Spo.ExternalSharingCenter.StressTest.csproj", "{1D2F0961-DAF5-420A-967B-DC62355B856D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{D57DBFDA-1F48-4283-B91D-B6E9089BD1D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D57DBFDA-1F48-4283-B91D-B6E9089BD1D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D57DBFDA-1F48-4283-B91D-B6E9089BD1D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D2F0961-DAF5-420A-967B-DC62355B856D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D2F0961-DAF5-420A-967B-DC62355B856D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D2F0961-DAF5-420A-967B-DC62355B856D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D2F0961-DAF5-420A-967B-DC62355B856D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
