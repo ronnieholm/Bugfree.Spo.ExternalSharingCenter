@@ -51,7 +51,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.StressTest
         static void Main(string[] args) 
         {
             var username = "<user>@<tenant>.onmicrosoft.com";
-            var password = "<password";
+            var password = "<password>";
             var siteCollection = "https://<tenant>.sharepoint.com/sites/<siteCollection>";
 
             var securePassword = new SecureString();
