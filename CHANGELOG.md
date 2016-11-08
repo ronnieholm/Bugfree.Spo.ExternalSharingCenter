@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Bugfree.Spo.ExternalSharingCenter 1.0.4 (2016-11-08)
+
+* [#7](https://github.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/issues/7) - When number of site collection > 500, start page goes blank
+
 ## Bugfree.Spo.ExternalSharingCenter 1.0.3 (2016-09-21)
 
 * [#6](https://github.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/issues/6) - Invalid recipient of warning and expiration mails when inviter is external user
