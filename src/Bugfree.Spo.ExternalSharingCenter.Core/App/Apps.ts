@@ -591,31 +591,34 @@ module Bugfree.Spo.ExternalSharingCenter.Services.GetSiteCollections {
             const batchSize = 500;
             this.$http.get(`${url}&rowlimit=${batchSize}&startRow=${startRow}`)
                 .then(response => {
-                    const relevantResults: any = (<any>response.data).PrimaryQueryResult.RelevantResults;
+                    let relevantResults =
+                        siteCollections.length === 0
+                            ? (<any>response.data).PrimaryQueryResult.RelevantResults
+                            : (<any>response.data).d.query.PrimaryQueryResult.RelevantResults;
                     const rows: any[] = relevantResults.Table.Rows;
 
                     for (var i = 0; i < rows.length; i++) {
                         const row = rows[i];
                         const cells = row.Cells;
 
-                        var title = "";
-                        var url = "";
+                        let t = "";
+                        let u = "";
                         for (var j = 0; j < cells.length; j++) {
                             var key = cells[j]["Key"];
                             var value = cells[j]["Value"];
 
                             if (key === "Title") {
-                                title = value;
+                                t = value;
                             }
 
                             if (key === "OriginalPath") {
-                                url = value;
+                                u = value;
                             }
                         }
 
                         siteCollections.push({
-                            title: title,
-                            url: url
+                            title: t,
+                            url: u
                         });
                     }
 
