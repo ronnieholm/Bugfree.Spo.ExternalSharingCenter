@@ -197,7 +197,7 @@ enabled.
 
 [Manage external sharing for your SharePoint Online environment](https://support.office.com/en-us/article/Manage-external-sharing-for-your-SharePoint-Online-environment-c8a462eb-0723-4b0b-8d0a-70feafe4be85)
 
-[Controlling tenant and site collection setting with CSOM](https://github.com/OfficeDev/PnP/tree/master/Samples/Core.ExternalSharing#controlling-tenant-and-site-collection-setting-with-csom)
+[Controlling tenant and site collection setting with CSOM](https://github.com/SharePoint/PnP/tree/master/Samples/Core.ExternalSharing#controlling-tenant-and-site-collection-setting-with-csom)
 
 [Understanding External Users in SharePoint Online](https://blogs.technet.microsoft.com/lystavlen/2013/04/14/understanding-external-users-in-sharepoint-online)
 
