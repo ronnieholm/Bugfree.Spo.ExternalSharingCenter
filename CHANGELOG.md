@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Bugfree.Spo.ExternalSharingCenter 1.0.5 (2017-01-06)
+
+* [#8](https://github.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/issues/8) - When any shared site collection has no owners, expiration or warning about expiration fails
+
 ## Bugfree.Spo.ExternalSharingCenter 1.0.4 (2016-11-08)
 
 * [#7](https://github.com/ronnieholm/Bugfree.Spo.ExternalSharingCenter/issues/7) - When number of site collection > 500, start page goes blank
