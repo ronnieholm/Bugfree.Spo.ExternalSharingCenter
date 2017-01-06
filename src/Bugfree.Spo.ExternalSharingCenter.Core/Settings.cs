@@ -10,7 +10,6 @@ namespace Bugfree.Spo.ExternalSharingCenter
         public string TenantAdministratorPassword { get; private set; }
         public int ExpirationWarningMailsMinimumDaysBetween { get; set; }
         public int ExpirationWarningDays { get; set; }
-
         public string MailFrom { get; set; }
 
         public Settings()

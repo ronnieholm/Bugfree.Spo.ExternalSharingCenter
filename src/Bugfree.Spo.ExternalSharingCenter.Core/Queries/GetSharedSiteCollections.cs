@@ -53,7 +53,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
                     var candidate = ownerGroup.Users.FirstOrDefault(u => u.Email.Contains("@"));
                     if (candidate == null) 
                     {
-                        throw new InvalidOperationException($"To support external sharing, add a user with an email address to the '{ownerGroup.Title}' grouop on site collection '{sc.Url}'");
+                        Logger.Warning($"To support external sharing, add a user with an email address to the '{ownerGroup.Title}' group on site collection '{sc.Url}'. Otherwise site collection sharings are eventually deleted without warning or experiration mails sent");
                     }
 
                     var externalUsers = new GetExternalUsersOnSiteCollection(Logger).Execute(site);
@@ -61,7 +61,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Queries
                     {
                         Url = new Uri(sc.Url),
                         Title = sc.Title,
-                        FallbackOwnerMail = candidate.Email.ToLower(),
+                        FallbackOwnerMail = candidate != null ? candidate.Email.ToLower() : null,
                         ExternalUsers = externalUsers
                     };
                 }

@@ -9,7 +9,7 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core.Commands
 
         public void Execute(ClientContext ctx, int userId)
         {
-            Logger.Verbose($"About to execute {nameof(DeleteUserFromSiteCollection)} on '{ctx.Url}' for userId '{userId}");
+            Logger.Verbose($"About to execute {nameof(DeleteUserFromSiteCollection)} on '{ctx.Url}' for userId '{userId}'");
             ctx.Web.SiteUsers.RemoveById(userId);
             ctx.ExecuteQuery();
         }

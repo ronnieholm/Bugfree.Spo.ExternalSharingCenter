@@ -130,7 +130,6 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
         {
             Initialize();
             var expirations = new GenerateExpirations(_logger).Execute(_db, DateTime.Now.ToUniversalTime());
-
             expirations.Where(e => e.SharePointExternalUser.InvitedBy == null).ToList().ForEach(e => 
             {
                 var sc = _db.SharedSiteCollections.Single(s => s.Url == e.SiteCollection.Url);
@@ -142,7 +141,12 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
             _context.Load(sentMails);
             _context.ExecuteQuery();
 
-            expirationMails.ForEach(e => 
+            // in case both InvitedBy and FallbackOwnerMail comes out blank, we don't have
+            // anyone to send mail to and To address will be null. We could define a 
+            // DefaultFallbackOwnerMail in App.Config, but since we're using SharePoint for 
+            // mail sending, such address must be a member of some site collection. Otherwise, 
+            // SharePoint silently ignores the send mail attempt.
+            expirationMails.Where(e => e.To != null).ToList().ForEach(e => 
             {
                 var siteCollectionWithRecipientAsSiteUser = expirations.First(e1 => e1.SharePointExternalUser.InvitedBy == e.To);
                 using (var expirationMailContext = CreateClientContext(siteCollectionWithRecipientAsSiteUser.SiteCollection.Url)) 
