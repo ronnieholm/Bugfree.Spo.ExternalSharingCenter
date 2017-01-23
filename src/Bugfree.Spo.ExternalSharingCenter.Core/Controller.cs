@@ -33,6 +33,7 @@ using Bugfree.Spo.ExternalSharingCenter.Core.Queries;
 using C = Bugfree.Spo.ExternalSharingCenter.Core.Commands.CreateExternalSharingCenterWeb;
 using XE = System.Xml.Linq.XElement;
 using XC = System.Xml.Linq.XCData;
+using System.Collections.Generic;
 
 namespace Bugfree.Spo.ExternalSharingCenter.Core
 {
@@ -79,13 +80,13 @@ namespace Bugfree.Spo.ExternalSharingCenter.Core
 
             // helps diagnose issues with the slightly buggy tanant API
             var siteCollectionsCount = _db.SharedSiteCollections.Count();
-            var externalUsersCount = 0;
+            var externalUsers = new List<string>();
             foreach (var sc in _db.SharedSiteCollections) 
             {
-                externalUsersCount += sc.ExternalUsers.Count();
+                sc.ExternalUsers.ForEach(eu => externalUsers.Add(eu.AcceptedAs));
                 _logger.Verbose($"{sc.ExternalUsers.Count()} {sc.Url}");
             }
-            _logger.Verbose($"Found {externalUsersCount} users in total");
+            _logger.Verbose($"Found {externalUsers.Count()}/{externalUsers.Distinct().Count()} total/unique users");
         }
 
         public ClientContext CreateClientContext(Uri url)
